@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { getStoredToken } from '../shared/auth/tokenStorage'
 import HomeView from '../home/views/HomeView.vue'
 import LoginView from '../auth/views/LoginView.vue'
+import RegisterView from '../auth/views/RegisterView.vue'
 import DailyGameView from '../game/views/DailyGameView.vue'
 import PracticeGameView from '../game/views/PracticeGameView.vue'
 import PracticePlayView from '../game/views/PracticePlayView.vue'
@@ -13,6 +14,7 @@ const router = createRouter({
   routes: [
     { path: '/', name: 'home', component: HomeView, meta: { requiresAuth: true } },
     { path: '/login', name: 'login', component: LoginView },
+    { path: '/register', name: 'register', component: RegisterView },
     { path: '/daily', name: 'daily', component: DailyGameView, meta: { requiresAuth: true } },
     { path: '/practice', name: 'practice', component: PracticeGameView, meta: { requiresAuth: true } },
     { path: '/practice/:gamesetId', name: 'practice-play', component: PracticePlayView, meta: { requiresAuth: true } },
@@ -26,7 +28,7 @@ router.beforeEach((to) => {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
 
-  if (to.name === 'login' && getStoredToken()) {
+  if ((to.name === 'login' || to.name === 'register') && getStoredToken()) {
     return { name: 'home' }
   }
 

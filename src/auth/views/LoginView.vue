@@ -15,12 +15,16 @@
         {{ auth.isLoading.value ? 'Signing in...' : 'Sign in' }}
       </button>
     </form>
+
+    <p class="register-link">
+      Don't have an account? <RouterLink to="/register">Register</RouterLink>
+    </p>
   </section>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
 import { useAuthStore } from '../store/authStore'
 
@@ -54,5 +58,9 @@ input {
   padding: 0.5rem 1rem;
   border: 1px solid #d1d5db;
   border-radius: 2rem;
+}
+.register-link {
+  margin-top: 1rem;
+  font-size: 0.9rem;
 }
 </style>

@@ -109,6 +109,13 @@ watch(
     const keptSet = new Set(kept)
     const added = remaining.filter((w) => !keptSet.has(w))
     displayWords.value = [...kept, ...added]
+
+    // Auto-select all words when only the last wordset (4 words) remains
+    if (remaining.length === 4) {
+      for (const word of remaining) {
+        selectedWords.add(word)
+      }
+    }
   },
   { immediate: true },
 )
