@@ -23,6 +23,7 @@ export interface WordsetRead {
 }
 
 export interface GameStatus {
+  game_name: string
   start_time: string
   end_time: string | null
   words_remaining: string[]

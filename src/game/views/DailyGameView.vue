@@ -1,14 +1,11 @@
 <template>
   <section class="daily-view">
     <h1>Daily puzzle</h1>
-
-    <button type="button" :disabled="game.isLoading.value" @click="createGame">
-      {{ game.currentResult.value ? 'Restart daily game' : 'Start daily game' }}
-    </button>
+    <p v-if="game.isLoading.value && !game.currentResult.value" class="status-message">Loading today's puzzle...</p>
 
     <GameBoard
       v-if="game.currentResult.value"
-      title="Daily Game"
+      :title="game.gameName.value ?? 'Daily Game'"
       :words-remaining="game.wordsRemaining.value"
       :completed-groups="game.completedGroups.value"
       :result-message="game.resultMessage.value"
@@ -20,10 +17,15 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import GameBoard from '../components/GameBoard.vue'
 import { useGameStore } from '../store/gameStore'
 
 const game = useGameStore()
+
+onMounted(() => {
+  createGame()
+})
 
 async function createGame() {
   try {
@@ -41,3 +43,10 @@ async function onSubmitWords(words: string[]) {
   }
 }
 </script>
+
+<style scoped>
+.status-message {
+  margin: 0;
+  color: #4b5563;
+}
+</style>

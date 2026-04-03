@@ -4,38 +4,43 @@
 
     <ApiErrorBanner :message="game.errorMessage.value" />
 
-    <div class="controls">
-      <button type="button" :disabled="game.isLoading.value" @click="loadGamesets">Load gamesets</button>
-      <select v-model.number="selectedGamesetId">
-        <option :value="0">Choose gameset</option>
-        <option v-for="set in game.practiceSets.value" :key="set.id" :value="set.id">{{ set.name }}</option>
-      </select>
-      <button type="button" :disabled="!selectedGamesetId || game.isLoading.value" @click="startPractice">
-        Start selected practice game
+    <div class="header-actions">
+      <p>Select any available practice game to start playing.</p>
+    </div>
+
+    <div v-if="game.practiceSets.value.length" class="gameset-list">
+      <button
+        v-for="set in game.practiceSets.value"
+        :key="set.id"
+        type="button"
+        class="gameset-card"
+        :disabled="game.isLoading.value"
+        @click="openPracticeGame(set.id)"
+      >
+        <strong>{{ set.name }}</strong>
+        <span>Start this practice puzzle.</span>
       </button>
     </div>
 
-    <GameBoard
-      v-if="game.currentResult.value"
-      title="Practice Game"
-      :words-remaining="game.wordsRemaining.value"
-      :completed-groups="game.completedGroups.value"
-      :result-message="game.resultMessage.value"
-      :error-message="game.errorMessage.value"
-      :is-loading="game.isLoading.value"
-      @submit-words="onSubmitWords"
-    />
+    <p v-else-if="!game.isLoading.value" class="empty-state">
+      No practice games are available right now.
+    </p>
+
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
-import GameBoard from '../components/GameBoard.vue'
 import { useGameStore } from '../store/gameStore'
 
 const game = useGameStore()
-const selectedGamesetId = ref(0)
+const router = useRouter()
+
+onMounted(() => {
+  loadGamesets()
+})
 
 async function loadGamesets() {
   try {
@@ -45,36 +50,58 @@ async function loadGamesets() {
   }
 }
 
-async function startPractice() {
-  if (!selectedGamesetId.value) {
-    return
-  }
-
-  try {
-    await game.startPracticeGame(selectedGamesetId.value)
-  } catch {
-    // surfaced in store
-  }
-}
-
-async function onSubmitWords(words: string[]) {
-  try {
-    await game.submitWords(words)
-  } catch {
-    // surfaced in store
-  }
+function openPracticeGame(gamesetId: number) {
+  router.push({ name: 'practice-play', params: { gamesetId } })
 }
 </script>
 
 <style scoped>
-.controls {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
+.practice-view {
+  gap: 1rem;
 }
 
-select,
+.header-actions {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.header-actions p,
+.active-game p,
+.empty-state {
+  margin: 0;
+  color: #4b5563;
+}
+
+.gameset-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.gameset-card {
+  display: grid;
+  gap: 0.4rem;
+  text-align: left;
+  padding: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.gameset-card:hover:not(:disabled) {
+  border-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
+}
+
+.gameset-card span {
+  color: #4b5563;
+}
+
 button {
   font: inherit;
   padding: 0.5rem 0.75rem;

@@ -4,6 +4,8 @@ import HomeView from '../home/views/HomeView.vue'
 import LoginView from '../auth/views/LoginView.vue'
 import DailyGameView from '../game/views/DailyGameView.vue'
 import PracticeGameView from '../game/views/PracticeGameView.vue'
+import PracticePlayView from '../game/views/PracticePlayView.vue'
+import UserProfileView from '../auth/views/UserProfileView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -12,6 +14,8 @@ const router = createRouter({
     { path: '/login', name: 'login', component: LoginView },
     { path: '/daily', name: 'daily', component: DailyGameView, meta: { requiresAuth: true } },
     { path: '/practice', name: 'practice', component: PracticeGameView, meta: { requiresAuth: true } },
+    { path: '/practice/:gamesetId', name: 'practice-play', component: PracticePlayView, meta: { requiresAuth: true } },
+    { path: '/profile', name: 'profile', component: UserProfileView, meta: { requiresAuth: true } },
   ],
 })
 

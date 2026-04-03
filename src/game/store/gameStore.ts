@@ -11,6 +11,7 @@ const errorMessage = ref<string | null>(null)
 export function useGameStore() {
   const auth = useAuthStore()
 
+  const gameName = computed(() => currentResult.value?.game_status.game_name ?? null)
   const wordsRemaining = computed(() => currentResult.value?.game_status.words_remaining ?? [])
   const completedGroups = computed(() => currentResult.value?.game_status.wordsets_completed ?? [])
   const resultMessage = computed(() => currentResult.value?.result_message ?? null)
@@ -86,6 +87,7 @@ export function useGameStore() {
   return {
     currentResult,
     practiceSets,
+    gameName,
     wordsRemaining,
     completedGroups,
     resultMessage,
