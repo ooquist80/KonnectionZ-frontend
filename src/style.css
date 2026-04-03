@@ -1,0 +1,28 @@
+:root {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: #111827;
+  background: #f9fafb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: #2563eb;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+section {
+  display: grid;
+  gap: 1rem;
+}
