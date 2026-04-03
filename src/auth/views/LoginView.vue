@@ -49,9 +49,10 @@ form {
   max-width: 26rem;
 }
 
-input,
-button {
+input {
   font: inherit;
-  padding: 0.6rem 0.75rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 2rem;
 }
 </style>

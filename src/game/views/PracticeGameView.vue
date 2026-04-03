@@ -83,9 +83,9 @@ function openPracticeGame(gamesetId: number) {
   gap: 0.4rem;
   text-align: left;
   padding: 1rem;
-  border: 1px solid #d1d5db;
   border-radius: 0.75rem;
-  background: #ffffff;
+  font-size: inherit;
+  font-weight: normal;
   transition:
     border-color 0.15s ease,
     transform 0.15s ease,
@@ -100,10 +100,5 @@ function openPracticeGame(gamesetId: number) {
 
 .gameset-card span {
   color: #4b5563;
-}
-
-button {
-  font: inherit;
-  padding: 0.5rem 0.75rem;
 }
 </style>

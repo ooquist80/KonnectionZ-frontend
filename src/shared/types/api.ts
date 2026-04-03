@@ -37,6 +37,32 @@ export interface PlayResult {
   result_message: string | null
 }
 
+export interface GameSetRead {
+  id: number
+  date: string
+  name: string
+  wordsets: WordsetRead[]
+}
+
+export interface GameSetWrite {
+  name: string
+  date?: string
+  wordsets: number[]
+}
+
+export interface WordsetWrite {
+  category: string
+  difficulty: number
+  words: string[]
+}
+
+export interface UserWrite {
+  email: string
+  username: string
+  password: string
+  scopes?: string
+}
+
 export interface ApiValidationError {
   detail?: Array<{
     loc: Array<string | number>

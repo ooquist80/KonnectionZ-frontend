@@ -32,6 +32,7 @@ export async function login(credentials: LoginPayload): Promise<string> {
   const form = new URLSearchParams()
   form.set('username', credentials.username)
   form.set('password', credentials.password)
+  form.set('scope', 'user:play user:admin')
 
   const response = await requestJson<unknown>('/auth/token', {
     method: 'POST',

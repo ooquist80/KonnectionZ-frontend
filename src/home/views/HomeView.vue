@@ -20,14 +20,24 @@
         <strong>User Profile</strong>
         <span>View your signed-in account details.</span>
       </RouterLink>
+
+      <RouterLink v-if="isAdmin" to="/admin" class="menu-card menu-card-admin">
+        <strong>Administration</strong>
+        <span>Manage gamesets, wordsets and users.</span>
+      </RouterLink>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useAuthStore } from '../../auth/store/authStore'
 
 const auth = useAuthStore()
+const isAdmin = computed(() => {
+  const scopes = auth.user.value?.scopes ?? []
+  return scopes.some((s) => s.split(' ').includes('user:admin'))
+})
 </script>
 
 <style scoped>
@@ -73,5 +83,14 @@ const auth = useAuthStore()
 
 .menu-card span {
   color: #4b5563;
+}
+
+.menu-card-admin {
+  border-color: #c4b5fd;
+}
+
+.menu-card-admin:hover {
+  border-color: #7c3aed;
+  box-shadow: 0 10px 24px rgba(124, 58, 237, 0.08);
 }
 </style>

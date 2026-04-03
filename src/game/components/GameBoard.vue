@@ -4,7 +4,7 @@
 
     <ApiErrorBanner :message="errorMessage" />
 
-    <p v-if="resultMessage" class="result">{{ resultMessage }}</p>
+    <p v-if="resultMessage" :class="resultClass">{{ resultMessage }}</p>
 
     <!-- Completed groups -->
     <div
@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import type { WordsetRead } from '../../shared/types/api'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
 
@@ -84,6 +84,13 @@ const emit = defineEmits<{
 const selectedWords = reactive(new Set<string>())
 const displayWords = ref<string[]>([])
 
+const resultClass = computed(() => {
+  const msg = props.resultMessage
+  if (!msg) return ''
+  if (msg.startsWith('Almost')) return 'result result-almost'
+  if (msg.startsWith('Incorrect')) return 'result result-incorrect'
+  return 'result result-correct'
+})
 // Sync local display order with remaining words from the server
 watch(
   () => props.wordsRemaining,
@@ -201,12 +208,12 @@ function onSubmit() {
 }
 
 .word-btn.selected {
-  background: #1f2937;
+  background: #16a34a;
   color: #fff;
 }
 
 .word-btn.selected:hover {
-  background: #374151;
+  background: #15803d;
 }
 
 /* Result banner */
@@ -214,10 +221,23 @@ function onSubmit() {
   margin: 0;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
-  background: #dcfce7;
-  color: #166534;
   text-align: center;
   font-weight: 500;
+}
+
+.result-correct {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.result-almost {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.result-incorrect {
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 /* Actions row */
@@ -238,40 +258,5 @@ function onSubmit() {
 .action-buttons {
   display: flex;
   gap: 0.5rem;
-}
-
-.btn {
-  font: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 2rem;
-  cursor: pointer;
-  transition: background 0.15s, opacity 0.15s;
-}
-
-.btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background: #fff;
-  color: #1f2937;
-  border: 1px solid #d1d5db;
-}
-
-.btn-secondary:hover:not(:disabled) {
-  background: #f3f4f6;
-}
-
-.btn-primary {
-  background: #1f2937;
-  color: #fff;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: #374151;
 }
 </style>

@@ -2,13 +2,12 @@
   <div class="app-shell">
     <header class="topbar">
       <RouterLink to="/" class="brand">KonnectionZ</RouterLink>
+      <RouterLink v-if="showMainMenuButton" to="/" class="main-menu-button">Main menu</RouterLink>
     </header>
 
     <main>
       <RouterView />
     </main>
-
-    <RouterLink v-if="showMainMenuButton" to="/" class="main-menu-button">Main menu</RouterLink>
 
     <div v-if="auth.user.value" class="account-dock">
       <RouterLink to="/profile" class="profile-link">{{ auth.user.value.username }}</RouterLink>
@@ -53,6 +52,9 @@ function onLogout() {
 }
 
 .topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 1rem;
 }
 
@@ -83,24 +85,21 @@ function onLogout() {
   font-weight: 600;
 }
 
-.main-menu-button,
-button {
+.main-menu-button {
   font: inherit;
-  padding: 0.35rem 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  color: #1f2937;
+  text-decoration: none;
+  border: 1px solid #d1d5db;
+  border-radius: 2rem;
+  background: #fff;
+  transition: background 0.15s;
 }
 
-.main-menu-button {
-  position: fixed;
-  top: 1.25rem;
-  right: 1.25rem;
-  color: #111827;
-  text-decoration: none;
-  font-weight: 600;
-  border: 1px solid #d1d5db;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 12px 32px rgba(17, 24, 39, 0.08);
-  z-index: 20;
+.main-menu-button:hover {
+  background: #f3f4f6;
 }
 
 main {
@@ -111,11 +110,6 @@ main {
 }
 
 @media (max-width: 720px) {
-  .main-menu-button {
-    top: 0.75rem;
-    right: 0.75rem;
-  }
-
   .account-dock {
     left: 0.75rem;
     right: 0.75rem;

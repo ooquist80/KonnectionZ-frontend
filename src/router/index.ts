@@ -6,6 +6,7 @@ import DailyGameView from '../game/views/DailyGameView.vue'
 import PracticeGameView from '../game/views/PracticeGameView.vue'
 import PracticePlayView from '../game/views/PracticePlayView.vue'
 import UserProfileView from '../auth/views/UserProfileView.vue'
+import AdminView from '../admin/views/AdminView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -16,6 +17,7 @@ const router = createRouter({
     { path: '/practice', name: 'practice', component: PracticeGameView, meta: { requiresAuth: true } },
     { path: '/practice/:gamesetId', name: 'practice-play', component: PracticePlayView, meta: { requiresAuth: true } },
     { path: '/profile', name: 'profile', component: UserProfileView, meta: { requiresAuth: true } },
+    { path: '/admin', name: 'admin', component: AdminView, meta: { requiresAuth: true } },
   ],
 })
 

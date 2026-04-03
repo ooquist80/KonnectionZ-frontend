@@ -26,3 +26,48 @@ section {
   display: grid;
   gap: 1rem;
 }
+
+/* ── Global button system ── */
+
+button,
+.btn {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 2rem;
+  background: #fff;
+  color: #1f2937;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+}
+
+button:hover:not(:disabled),
+.btn:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+button:active:not(:disabled),
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+button:disabled,
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-primary,
+button[type="submit"] {
+  background: #1f2937;
+  color: #fff;
+  border-color: #1f2937;
+}
+
+.btn-primary:hover:not(:disabled),
+button[type="submit"]:hover:not(:disabled) {
+  background: #374151;
+  border-color: #374151;
+}
