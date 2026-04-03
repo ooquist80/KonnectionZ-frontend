@@ -153,6 +153,7 @@ function onSubmit() {
   display: grid;
   gap: 0.75rem;
   max-width: 480px;
+  margin: 0 auto;
 }
 
 /* Completed groups */

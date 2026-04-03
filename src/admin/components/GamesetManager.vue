@@ -9,6 +9,11 @@
         <label for="gs-name">Name</label>
         <input id="gs-name" v-model="form.name" required placeholder="e.g. Daily 2026-04-03" />
 
+        <label class="checkbox-label">
+          <input type="checkbox" v-model="form.daily" />
+          Daily game
+        </label>
+
         <label>Select 4 wordsets</label>
         <div v-if="availableWordsets.length" class="wordset-picker">
           <label
@@ -43,7 +48,7 @@
       <div v-for="gs in gamesets" :key="gs.id" class="gameset-card">
         <div class="gameset-header">
           <strong>{{ gs.name }}</strong>
-          <span class="muted">ID #{{ gs.id }} · {{ new Date(gs.date).toLocaleDateString() }}</span>
+          <span class="muted">ID #{{ gs.id }} · {{ new Date(gs.date).toLocaleDateString() }}{{ gs.daily ? ' · 📅' : '' }}</span>
         </div>
         <div class="wordset-tags">
           <span v-for="ws in gs.wordsets" :key="ws.id" class="tag">
@@ -69,7 +74,7 @@ const availableWordsets = ref<WordsetRead[]>([])
 const isLoading = ref(false)
 const errorMessage = ref<string | null>(null)
 
-const form = reactive({ name: '', wordsetIds: new Set<number>() })
+const form = reactive({ name: '', daily: false, wordsetIds: new Set<number>() })
 
 function token(): string {
   return auth.token.value!
@@ -103,8 +108,9 @@ async function onCreateGameset() {
   isLoading.value = true
   errorMessage.value = null
   try {
-    await createGameset(token(), { name: form.name, wordsets: [...form.wordsetIds] })
+    await createGameset(token(), { name: form.name, daily: form.daily, wordsets: [...form.wordsetIds] })
     form.name = ''
+    form.daily = false
     form.wordsetIds.clear()
     await loadData()
   } catch (e) {
@@ -152,6 +158,14 @@ summary {
   border: 1px solid #d1d5db;
   border-radius: 2rem;
   max-width: 30rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
 }
 
 .wordset-picker {

@@ -1,10 +1,10 @@
 import { computed, ref } from 'vue'
 import type { PlayGameSet, PlayResult } from '../../shared/types/api'
-import { createDailyGame, createPracticeGame, listPracticeGamesets, playWords } from '../../shared/api/playApi'
+import { createDailyGame, createGame, listGamesets, playWords } from '../../shared/api/playApi'
 import { useAuthStore } from '../../auth/store/authStore'
 
 const currentResult = ref<PlayResult | null>(null)
-const practiceSets = ref<PlayGameSet[]>([])
+const gameSets = ref<PlayGameSet[]>([])
 const isLoading = ref(false)
 const errorMessage = ref<string | null>(null)
 
@@ -38,28 +38,28 @@ export function useGameStore() {
     }
   }
 
-  async function loadPracticeSets(): Promise<void> {
+  async function loadGameSets(): Promise<void> {
     isLoading.value = true
     errorMessage.value = null
 
     try {
-      practiceSets.value = await listPracticeGamesets(requireToken())
+      gameSets.value = await listGamesets(requireToken())
     } catch (error) {
-      errorMessage.value = error instanceof Error ? error.message : 'Failed to load practice gamesets'
+      errorMessage.value = error instanceof Error ? error.message : 'Failed to load gamesets'
       throw error
     } finally {
       isLoading.value = false
     }
   }
 
-  async function startPracticeGame(gamesetId: number): Promise<void> {
+  async function startGame(gamesetId: number): Promise<void> {
     isLoading.value = true
     errorMessage.value = null
 
     try {
-      currentResult.value = await createPracticeGame(requireToken(), gamesetId)
+      currentResult.value = await createGame(requireToken(), gamesetId)
     } catch (error) {
-      errorMessage.value = error instanceof Error ? error.message : 'Failed to create practice game'
+      errorMessage.value = error instanceof Error ? error.message : 'Failed to create game'
       throw error
     } finally {
       isLoading.value = false
@@ -86,7 +86,7 @@ export function useGameStore() {
 
   return {
     currentResult,
-    practiceSets,
+    gameSets,
     gameName,
     wordsRemaining,
     completedGroups,
@@ -94,8 +94,8 @@ export function useGameStore() {
     isLoading,
     errorMessage,
     startDailyGame,
-    loadPracticeSets,
-    startPracticeGame,
+    loadGameSets,
+    startGame,
     submitWords,
   }
 }

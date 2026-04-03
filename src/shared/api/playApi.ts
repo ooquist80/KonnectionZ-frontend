@@ -8,14 +8,14 @@ export function createDailyGame(token: string): Promise<PlayResult> {
   })
 }
 
-export function listPracticeGamesets(token: string): Promise<PlayGameSet[]> {
+export function listGamesets(token: string): Promise<PlayGameSet[]> {
   return requestJson<PlayGameSet[]>('/play/gamesets', {
     method: 'GET',
     token,
   })
 }
 
-export function createPracticeGame(token: string, gamesetId: number): Promise<PlayResult> {
+export function createGame(token: string, gamesetId: number): Promise<PlayResult> {
   return requestJson<PlayResult>(`/play/${gamesetId}`, {
     method: 'POST',
     token,

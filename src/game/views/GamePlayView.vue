@@ -1,15 +1,15 @@
 <template>
-  <section class="practice-play-view">
+  <section class="game-play-view">
     <div class="view-header">
-      <h1>Practice puzzle</h1>
-      <RouterLink to="/practice" class="back-link">Back to practice list</RouterLink>
+      <h1>Puzzle</h1>
+      <RouterLink to="/game" class="back-link">Back to game list</RouterLink>
     </div>
 
-    <p v-if="game.isLoading.value && !game.currentResult.value" class="status-message">Loading practice puzzle...</p>
+    <p v-if="game.isLoading.value && !game.currentResult.value" class="status-message">Loading puzzle...</p>
 
     <GameBoard
       v-if="game.currentResult.value"
-      :title="game.gameName.value ?? 'Practice Game'"
+      :title="game.gameName.value ?? 'Game'"
       :words-remaining="game.wordsRemaining.value"
       :completed-groups="game.completedGroups.value"
       :result-message="game.resultMessage.value"
@@ -31,26 +31,26 @@ const route = useRoute()
 const router = useRouter()
 
 onMounted(() => {
-  void loadPracticeGame()
+  void loadGame()
 })
 
 watch(
   () => route.params.gamesetId,
   () => {
-    void loadPracticeGame()
+    void loadGame()
   },
 )
 
-async function loadPracticeGame() {
+async function loadGame() {
   const gamesetId = Number(route.params.gamesetId)
 
   if (!Number.isInteger(gamesetId) || gamesetId <= 0) {
-    await router.replace('/practice')
+    await router.replace('/game')
     return
   }
 
   try {
-    await game.startPracticeGame(gamesetId)
+    await game.startGame(gamesetId)
   } catch {
     // surfaced in store
   }
@@ -66,7 +66,7 @@ async function onSubmitWords(words: string[]) {
 </script>
 
 <style scoped>
-.practice-play-view {
+.game-play-view {
   gap: 1rem;
 }
 

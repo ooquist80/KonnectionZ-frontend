@@ -1,29 +1,29 @@
 <template>
-  <section class="practice-view">
-    <h1>Practice puzzles</h1>
+  <section class="game-select-view">
+    <h1>Select a game</h1>
 
     <ApiErrorBanner :message="game.errorMessage.value" />
 
     <div class="header-actions">
-      <p>Select any available practice game to start playing.</p>
+      <p>Select any available game to start playing.</p>
     </div>
 
-    <div v-if="game.practiceSets.value.length" class="gameset-list">
+    <div v-if="game.gameSets.value.length" class="gameset-list">
       <button
-        v-for="set in game.practiceSets.value"
+        v-for="set in game.gameSets.value"
         :key="set.id"
         type="button"
         class="gameset-card"
         :disabled="game.isLoading.value"
-        @click="openPracticeGame(set.id)"
+        @click="openGame(set.id)"
       >
         <strong>{{ set.name }}</strong>
-        <span>Start this practice puzzle.</span>
+        <span>Start this puzzle.</span>
       </button>
     </div>
 
     <p v-else-if="!game.isLoading.value" class="empty-state">
-      No practice games are available right now.
+      No games are available right now.
     </p>
 
   </section>
@@ -44,19 +44,19 @@ onMounted(() => {
 
 async function loadGamesets() {
   try {
-    await game.loadPracticeSets()
+    await game.loadGameSets()
   } catch {
     // surfaced in store
   }
 }
 
-function openPracticeGame(gamesetId: number) {
-  router.push({ name: 'practice-play', params: { gamesetId } })
+function openGame(gamesetId: number) {
+  router.push({ name: 'game-play', params: { gamesetId } })
 }
 </script>
 
 <style scoped>
-.practice-view {
+.game-select-view {
   gap: 1rem;
 }
 

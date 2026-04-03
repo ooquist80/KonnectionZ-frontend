@@ -62,3 +62,11 @@ export function createUser(token: string, payload: UserWrite): Promise<UserRead>
 export function getUser(token: string, userId: number): Promise<UserRead> {
   return requestJson<UserRead>(`/users/${userId}`, { method: 'GET', token })
 }
+
+export function listUsers(token: string): Promise<UserRead[]> {
+  return requestJson<UserRead[]>('/users/', { method: 'GET', token })
+}
+
+export function deleteUser(token: string, userId: number): Promise<void> {
+  return requestJson<void>(`/users/${userId}`, { method: 'DELETE', token })
+}

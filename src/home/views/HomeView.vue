@@ -11,9 +11,9 @@
         <span>Jump straight into today's puzzle.</span>
       </RouterLink>
 
-      <RouterLink to="/practice" class="menu-card">
-        <strong>Practice</strong>
-        <span>Browse all available practice games.</span>
+      <RouterLink to="/game" class="menu-card">
+        <strong>Select a game</strong>
+        <span>Browse all available games.</span>
       </RouterLink>
 
       <RouterLink to="/profile" class="menu-card">

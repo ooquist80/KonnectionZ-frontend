@@ -3,7 +3,7 @@
     <ApiErrorBanner :message="errorMessage" />
 
     <!-- Create user form -->
-    <details class="create-section" open>
+    <details class="create-section">
       <summary>Create new user</summary>
       <form class="create-form" @submit.prevent="onCreateUser">
         <label for="u-username">Username</label>
@@ -22,69 +22,81 @@
       </form>
     </details>
 
-    <!-- Lookup user -->
-    <details class="create-section">
-      <summary>Look up user by ID</summary>
-      <form class="create-form" @submit.prevent="onLookupUser">
-        <label for="lookup-id">User ID</label>
-        <input id="lookup-id" v-model.number="lookupId" type="number" min="1" required />
-        <button type="submit" :disabled="isLoading">{{ isLoading ? 'Looking up...' : 'Look up' }}</button>
-      </form>
-    </details>
-
-    <!-- Results -->
-    <div v-if="createdUser" class="result-card success">
-      <h3>User created</h3>
-      <UserDetail :user="createdUser" />
-    </div>
-
-    <div v-if="lookedUpUser" class="result-card">
-      <h3>User details</h3>
-      <UserDetail :user="lookedUpUser" />
+    <!-- All users list -->
+    <div class="users-section">
+      <h3>All users</h3>
+      <p v-if="usersLoading" class="status-text">Loading users…</p>
+      <p v-else-if="!users.length" class="status-text">No users found.</p>
+      <table v-else class="users-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Scopes</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="user in users" :key="user.id">
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.scopes.length ? user.scopes.join(', ') : 'None' }}</td>
+            <td>
+              <button
+                class="delete-btn"
+                :disabled="isLoading"
+                @click="onDeleteUser(user.id, user.username)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, defineComponent, h } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import type { UserRead } from '../../shared/types/api'
-import { createUser, getUser } from '../../shared/api/adminApi'
+import { createUser, listUsers, deleteUser } from '../../shared/api/adminApi'
 import { useAuthStore } from '../../auth/store/authStore'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
-
-const UserDetail = defineComponent({
-  props: { user: { type: Object as () => UserRead, required: true } },
-  setup(props) {
-    return () =>
-      h('dl', { class: 'user-dl' }, [
-        h('dt', 'ID'), h('dd', `#${props.user.id}`),
-        h('dt', 'Username'), h('dd', props.user.username),
-        h('dt', 'Email'), h('dd', props.user.email),
-        h('dt', 'Scopes'), h('dd', props.user.scopes.length ? props.user.scopes.join(', ') : 'None'),
-      ])
-  },
-})
 
 const auth = useAuthStore()
 const isLoading = ref(false)
 const errorMessage = ref<string | null>(null)
 
-const form = reactive({ username: '', email: '', password: '', scopes: 'user:play' })
-const createdUser = ref<UserRead | null>(null)
+const users = ref<UserRead[]>([])
+const usersLoading = ref(false)
 
-const lookupId = ref<number>(1)
-const lookedUpUser = ref<UserRead | null>(null)
+const form = reactive({ username: '', email: '', password: '', scopes: 'user:play' })
 
 function token(): string {
   return auth.token.value!
 }
 
+async function fetchUsers() {
+  usersLoading.value = true
+  try {
+    users.value = await listUsers(token())
+  } catch (e) {
+    errorMessage.value = e instanceof Error ? e.message : 'Failed to load users'
+  } finally {
+    usersLoading.value = false
+  }
+}
+
+onMounted(fetchUsers)
+
 async function onCreateUser() {
   isLoading.value = true
   errorMessage.value = null
-  createdUser.value = null
   try {
-    createdUser.value = await createUser(token(), {
+    await createUser(token(), {
       username: form.username,
       email: form.email,
       password: form.password,
@@ -94,6 +106,7 @@ async function onCreateUser() {
     form.email = ''
     form.password = ''
     form.scopes = 'user:play'
+    await fetchUsers()
   } catch (e) {
     errorMessage.value = e instanceof Error ? e.message : 'Failed to create user'
   } finally {
@@ -101,14 +114,15 @@ async function onCreateUser() {
   }
 }
 
-async function onLookupUser() {
+async function onDeleteUser(userId: number, username: string) {
+  if (!confirm(`Delete user "${username}" (#${userId})?`)) return
   isLoading.value = true
   errorMessage.value = null
-  lookedUpUser.value = null
   try {
-    lookedUpUser.value = await getUser(token(), lookupId.value)
+    await deleteUser(token(), userId)
+    await fetchUsers()
   } catch (e) {
-    errorMessage.value = e instanceof Error ? e.message : 'User not found'
+    errorMessage.value = e instanceof Error ? e.message : 'Failed to delete user'
   } finally {
     isLoading.value = false
   }
@@ -146,38 +160,64 @@ summary {
   border-radius: 2rem;
 }
 
-.result-card {
-  padding: 1rem;
+.users-section {
   border: 1px solid #d1d5db;
   border-radius: 0.75rem;
-  background: #fff;
+  padding: 1rem;
 }
 
-.result-card.success {
-  border-color: #86efac;
-  background: #f0fdf4;
+.users-section h3 {
+  margin: 0 0 0.75rem;
 }
 
-.result-card h3 {
-  margin-bottom: 0.5rem;
+.status-text {
+  color: #6b7280;
+  font-size: 0.9rem;
 }
 
-.user-dl {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.25rem 1rem;
-  margin: 0;
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
 }
 
-.user-dl dt {
-  font-size: 0.85rem;
+.users-table th,
+.users-table td {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.users-table th {
+  font-size: 0.8rem;
   color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  font-weight: 600;
 }
 
-.user-dl dd {
-  margin: 0;
+.users-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.delete-btn {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+  padding: 0.25rem 0.75rem;
+  border-radius: 2rem;
+  font-size: 0.8rem;
   font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.delete-btn:hover:not(:disabled) {
+  background: #fecaca;
+}
+
+.delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>

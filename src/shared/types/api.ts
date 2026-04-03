@@ -40,12 +40,14 @@ export interface PlayResult {
 export interface GameSetRead {
   id: number
   date: string
+  daily: boolean
   name: string
   wordsets: WordsetRead[]
 }
 
 export interface GameSetWrite {
   name: string
+  daily: boolean
   date?: string
   wordsets: number[]
 }
