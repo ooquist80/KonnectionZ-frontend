@@ -107,6 +107,8 @@ main {
   border-radius: 0.75rem;
   padding: 1rem;
   margin-bottom: 5rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
 }
 
 @media (max-width: 720px) {

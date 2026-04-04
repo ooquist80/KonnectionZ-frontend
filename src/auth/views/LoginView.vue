@@ -1,6 +1,6 @@
 <template>
   <section class="login-view">
-    <h1>Sign in to KonnectionZ</h1>
+    <h1>Log in to your account</h1>
 
     <ApiErrorBanner :message="auth.errorMessage.value" />
 

@@ -21,7 +21,7 @@
     </form>
 
     <p class="sign-in-link">
-      Already have an account? <RouterLink to="/login">Sign in</RouterLink>
+      Already have an account? <RouterLink to="/login">Log in</RouterLink>
     </p>
   </section>
 </template>
