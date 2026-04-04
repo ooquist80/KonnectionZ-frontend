@@ -8,6 +8,10 @@ export interface UserRead {
 export interface PlayGameSet {
   id: number
   name: string
+  daily: boolean
+  turn_count: number | null
+  start_time: string | null
+  end_time: string | null
 }
 
 export interface WordRead {

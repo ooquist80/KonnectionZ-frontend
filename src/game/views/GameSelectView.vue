@@ -18,7 +18,7 @@
         @click="openGame(set.id)"
       >
         <strong>{{ set.name }}</strong>
-        <span>Start this puzzle.</span>
+        <span :class="['game-status', gameStatusClass(set)]">{{ gameStatusLabel(set) }}</span>
       </button>
     </div>
 
@@ -34,6 +34,7 @@ import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
 import { useGameStore } from '../store/gameStore'
+import type { PlayGameSet } from '../../shared/types/api'
 
 const game = useGameStore()
 const router = useRouter()
@@ -52,6 +53,18 @@ async function loadGamesets() {
 
 function openGame(gamesetId: number) {
   router.push({ name: 'game-play', params: { gamesetId } })
+}
+
+function gameStatusLabel(set: PlayGameSet): string {
+  if (set.end_time) return 'Completed'
+  if (set.start_time) return 'In progress'
+  return 'Not played'
+}
+
+function gameStatusClass(set: PlayGameSet): string {
+  if (set.end_time) return 'status-completed'
+  if (set.start_time) return 'status-in-progress'
+  return 'status-not-played'
 }
 </script>
 
@@ -98,7 +111,27 @@ function openGame(gamesetId: number) {
   box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
 }
 
-.gameset-card span {
-  color: #4b5563;
+.game-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  width: fit-content;
+}
+
+.status-not-played {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.status-in-progress {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.status-completed {
+  background: #dcfce7;
+  color: #166534;
 }
 </style>
+
