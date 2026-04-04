@@ -67,6 +67,15 @@ export function listUsers(token: string): Promise<UserRead[]> {
   return requestJson<UserRead[]>('/users/', { method: 'GET', token })
 }
 
+export function updateUser(token: string, userId: number, payload: UserWrite, changePassword: boolean): Promise<UserRead> {
+  return requestJson<UserRead>(`/users/${userId}?change_password=${changePassword}`, {
+    method: 'PUT',
+    token,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+}
+
 export function deleteUser(token: string, userId: number): Promise<void> {
   return requestJson<void>(`/users/${userId}`, { method: 'DELETE', token })
 }

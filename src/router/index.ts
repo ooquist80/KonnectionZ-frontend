@@ -8,6 +8,7 @@ import GameSelectView from '../game/views/GameSelectView.vue'
 import GamePlayView from '../game/views/GamePlayView.vue'
 import UserProfileView from '../auth/views/UserProfileView.vue'
 import AdminView from '../admin/views/AdminView.vue'
+import UserEditView from '../admin/views/UserEditView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -20,6 +21,7 @@ const router = createRouter({
     { path: '/game/:gamesetId', name: 'game-play', component: GamePlayView, meta: { requiresAuth: true } },
     { path: '/profile', name: 'profile', component: UserProfileView, meta: { requiresAuth: true } },
     { path: '/admin', name: 'admin', component: AdminView, meta: { requiresAuth: true } },
+    { path: '/admin/users/:userId', name: 'admin-user-edit', component: UserEditView, meta: { requiresAuth: true } },
   ],
 })
 

@@ -16,7 +16,7 @@
         <input id="u-password" v-model="form.password" type="password" required />
 
         <label for="u-scopes">Scopes</label>
-        <input id="u-scopes" v-model="form.scopes" placeholder="user:play" />
+        <input id="u-scopes" v-model="form.scopes" placeholder="user:play,user:admin" />
 
         <button type="submit" :disabled="isLoading">{{ isLoading ? 'Creating...' : 'Create user' }}</button>
       </form>
@@ -44,13 +44,22 @@
             <td>{{ user.email }}</td>
             <td>{{ user.scopes.length ? user.scopes.join(', ') : 'None' }}</td>
             <td>
-              <button
-                class="delete-btn"
-                :disabled="isLoading"
-                @click="onDeleteUser(user.id, user.username)"
-              >
-                Delete
-              </button>
+              <div class="row-actions">
+                <button
+                  class="edit-btn"
+                  :disabled="isLoading"
+                  @click="router.push({ name: 'admin-user-edit', params: { userId: user.id } })"
+                >
+                  Edit
+                </button>
+                <button
+                  class="delete-btn"
+                  :disabled="isLoading"
+                  @click="onDeleteUser(user.id, user.username)"
+                >
+                  Delete
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -61,12 +70,14 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import type { UserRead } from '../../shared/types/api'
 import { createUser, listUsers, deleteUser } from '../../shared/api/adminApi'
 import { useAuthStore } from '../../auth/store/authStore'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
 
 const auth = useAuthStore()
+const router = useRouter()
 const isLoading = ref(false)
 const errorMessage = ref<string | null>(null)
 
@@ -198,6 +209,32 @@ summary {
 
 .users-table tbody tr:hover {
   background: #f9fafb;
+}
+
+.row-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.edit-btn {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  padding: 0.25rem 0.75rem;
+  border-radius: 2rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.edit-btn:hover:not(:disabled) {
+  background: #dbeafe;
+}
+
+.edit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .delete-btn {
