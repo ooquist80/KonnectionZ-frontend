@@ -53,6 +53,8 @@ All HTTP calls go through `shared/api/http.ts → requestJson<T>()`. The JWT bea
 - Base URL is `import.meta.env.VITE_API_BASE_URL`, defaulting to `http://localhost:8000`.
 - API types live exclusively in `shared/types/api.ts`.
 
+OpenAPI spec is at `http://localhost:8000/openapi.json` when the backend is running.
+
 ### Auth / routing
 - JWT stored in `localStorage` under key `konnectionz.accessToken` via `shared/auth/tokenStorage.ts`.
 - Route guard in `router/index.ts` checks `getStoredToken()` for routes with `meta: { requiresAuth: true }`.

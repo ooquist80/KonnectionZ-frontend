@@ -1,4 +1,4 @@
-import type { UserRead } from '../types/api'
+import type { UserRead, UserWrite } from '../types/api'
 import { requestJson } from './http'
 
 interface LoginPayload {
@@ -49,5 +49,18 @@ export function getMe(token: string): Promise<UserRead> {
   return requestJson<UserRead>('/users/me', {
     method: 'GET',
     token,
+  })
+}
+
+export function updateMe(
+  token: string,
+  body: UserWrite,
+  changePassword: boolean,
+): Promise<void> {
+  return requestJson<void>(`/users/me?change_password=${changePassword}`, {
+    method: 'PUT',
+    token,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
   })
 }

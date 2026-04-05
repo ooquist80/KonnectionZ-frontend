@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
-import type { UserRead } from '../../shared/types/api'
+import type { UserRead, UserWrite } from '../../shared/types/api'
 import { clearStoredToken, getStoredToken, setStoredToken } from '../../shared/auth/tokenStorage'
-import { getMe, login } from '../../shared/api/authApi'
+import { getMe, login, updateMe } from '../../shared/api/authApi'
 
 const token = ref<string | null>(getStoredToken())
 const user = ref<UserRead | null>(null)
@@ -66,6 +66,23 @@ export function useAuthStore() {
     }
   }
 
+  async function updateProfile(
+    fields: Pick<UserWrite, 'username' | 'email'>,
+  ): Promise<void> {
+    if (!token.value) throw new Error('Not authenticated')
+    await updateMe(token.value, { ...fields, password: '' }, false)
+    await loadCurrentUser()
+  }
+
+  async function changePassword(
+    username: string,
+    email: string,
+    newPassword: string,
+  ): Promise<void> {
+    if (!token.value) throw new Error('Not authenticated')
+    await updateMe(token.value, { username, email, password: newPassword }, true)
+  }
+
   return {
     token,
     user,
@@ -75,5 +92,7 @@ export function useAuthStore() {
     loginWithPassword,
     logout,
     restoreSession,
+    updateProfile,
+    changePassword,
   }
 }
