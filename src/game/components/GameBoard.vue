@@ -144,7 +144,8 @@ function shuffleWords() {
 function onSubmit() {
   if (selectedWords.size !== 4) return
   emit('submitWords', [...selectedWords])
-  selectedWords.clear()
+  // Selection is only cleared when wordsRemaining changes (correct guess removes words).
+  // On an incorrect guess, the selection stays so the user can see what they picked.
 }
 </script>
 
