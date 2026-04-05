@@ -52,6 +52,13 @@ export function getMe(token: string): Promise<UserRead> {
   })
 }
 
+export function updateAvatar(token: string, avatar: string): Promise<void> {
+  return requestJson<void>(`/users/me/avatar?avatar=${encodeURIComponent(avatar)}`, {
+    method: 'PUT',
+    token,
+  })
+}
+
 export function updateMe(
   token: string,
   body: UserWrite,

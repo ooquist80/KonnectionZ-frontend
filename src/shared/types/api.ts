@@ -2,6 +2,7 @@ export interface UserRead {
   id: number
   email: string
   username: string
+  avatar: string
   scopes: string[]
 }
 

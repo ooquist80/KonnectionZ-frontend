@@ -7,6 +7,14 @@
 
     <!-- Read-only profile card -->
     <div v-if="auth.user.value" class="profile-card">
+      <div class="avatar-row">
+        <img
+          v-if="currentAvatarSvg"
+          :src="currentAvatarSvg"
+          alt="Your avatar"
+          class="avatar-img"
+        />
+      </div>
       <div class="profile-row">
         <span class="label">User ID</span>
         <strong>#{{ auth.user.value.id }}</strong>
@@ -24,12 +32,14 @@
         <strong>{{ auth.user.value.scopes.length ? auth.user.value.scopes.join(', ') : 'No scopes assigned' }}</strong>
       </div>
       <div class="card-actions">
-        <button v-if="!isEditing" class="btn-secondary" @click="startEditing">Edit</button>
-        <button v-else class="btn-secondary" @click="cancelEditing">Cancel</button>
+        <button class="btn-secondary" @click="toggleEditProfile">
+          {{ isEditing ? 'Cancel' : 'Edit profile' }}
+        </button>
+        <RouterLink to="/profile/avatar" class="btn-secondary">Edit avatar</RouterLink>
       </div>
     </div>
 
-    <!-- Edit profile form (only in edit mode) -->
+    <!-- Edit profile form -->
     <div v-if="isEditing" class="section">
       <h2>Edit profile</h2>
       <div v-if="profileSuccess" class="success-banner">{{ profileSuccess }}</div>
@@ -41,7 +51,6 @@
         <label for="email">Email</label>
         <input id="email" v-model="email" type="email" required autocomplete="email" />
 
-        <!-- Change password toggle -->
         <label class="checkbox-label">
           <input type="checkbox" v-model="showPasswordChange" />
           Change password
@@ -67,18 +76,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { RouterLink } from 'vue-router'
 import { useAuthStore } from '../store/authStore'
+import { buildAvatarSvg } from '../../shared/utils/avatarUtils'
 
 const auth = useAuthStore()
 
+const currentAvatarSvg = computed(() =>
+  auth.user.value?.avatar ? buildAvatarSvg(auth.user.value.avatar) : null,
+)
+
 const isEditing = ref(false)
 const showPasswordChange = ref(false)
-
 const username = ref(auth.user.value?.username ?? '')
 const email = ref(auth.user.value?.email ?? '')
 
-// Keep form in sync if user loads after mount
 watch(auth.user, (u) => {
   if (u) {
     username.value = u.username
@@ -86,29 +99,28 @@ watch(auth.user, (u) => {
   }
 })
 
-function startEditing() {
-  username.value = auth.user.value?.username ?? ''
-  email.value = auth.user.value?.email ?? ''
-  profileError.value = ''
-  profileSuccess.value = ''
-  isEditing.value = true
-}
-
-function cancelEditing() {
-  isEditing.value = false
-  showPasswordChange.value = false
-  newPassword.value = ''
-  confirmPassword.value = ''
-  profileError.value = ''
-  profileSuccess.value = ''
-  passwordError.value = ''
-  passwordSuccess.value = ''
+function toggleEditProfile() {
+  if (isEditing.value) {
+    isEditing.value = false
+    showPasswordChange.value = false
+    newPassword.value = ''
+    confirmPassword.value = ''
+    profileError.value = ''
+    profileSuccess.value = ''
+    passwordError.value = ''
+    passwordSuccess.value = ''
+  } else {
+    username.value = auth.user.value?.username ?? ''
+    email.value = auth.user.value?.email ?? ''
+    profileError.value = ''
+    profileSuccess.value = ''
+    isEditing.value = true
+  }
 }
 
 const profileLoading = ref(false)
 const profileError = ref('')
 const profileSuccess = ref('')
-
 const newPassword = ref('')
 const confirmPassword = ref('')
 const passwordLoading = ref(false)
@@ -121,11 +133,9 @@ async function onSaveProfile() {
   passwordError.value = ''
   passwordSuccess.value = ''
 
-  if (showPasswordChange.value) {
-    if (newPassword.value !== confirmPassword.value) {
-      passwordError.value = 'Passwords do not match.'
-      return
-    }
+  if (showPasswordChange.value && newPassword.value !== confirmPassword.value) {
+    passwordError.value = 'Passwords do not match.'
+    return
   }
 
   profileLoading.value = true
@@ -142,11 +152,7 @@ async function onSaveProfile() {
   if (showPasswordChange.value && newPassword.value) {
     passwordLoading.value = true
     try {
-      await auth.changePassword(
-        username.value,
-        email.value,
-        newPassword.value,
-      )
+      await auth.changePassword(username.value, email.value, newPassword.value)
       passwordSuccess.value = 'Password changed successfully.'
       newPassword.value = ''
       confirmPassword.value = ''
@@ -158,9 +164,7 @@ async function onSaveProfile() {
     }
   }
 
-  if (!passwordError.value) {
-    isEditing.value = false
-  }
+  if (!passwordError.value) isEditing.value = false
 }
 
 function extractErrorMessage(err: unknown): string | null {
@@ -200,6 +204,18 @@ function extractErrorMessage(err: unknown): string | null {
   background: #ffffff;
 }
 
+.avatar-row {
+  display: flex;
+  justify-content: center;
+}
+
+.avatar-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #f3f4f6;
+}
+
 .profile-row {
   display: grid;
   gap: 0.25rem;
@@ -213,6 +229,9 @@ function extractErrorMessage(err: unknown): string | null {
 }
 
 .card-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
   margin-top: 0.25rem;
 }
 
@@ -231,7 +250,6 @@ form {
   gap: 0.5rem;
   max-width: 26rem;
 }
-
 
 input {
   font: inherit;
@@ -264,6 +282,9 @@ input {
   font-size: 0.9rem;
   cursor: pointer;
   color: #374151;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
 }
 
 .btn-secondary:hover {
@@ -286,4 +307,3 @@ input {
   max-width: 26rem;
 }
 </style>
-

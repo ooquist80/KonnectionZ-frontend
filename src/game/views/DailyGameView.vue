@@ -1,11 +1,10 @@
 <template>
   <section class="daily-view">
-    <h1>Daily puzzle</h1>
+    <h1>{{ game.gameName.value ?? 'Daily puzzle' }}</h1>
     <p v-if="game.isLoading.value && !game.currentResult.value" class="status-message">Loading today's puzzle...</p>
 
     <GameBoard
       v-if="game.currentResult.value"
-      :title="game.gameName.value ?? 'Daily Game'"
       :words-remaining="game.wordsRemaining.value"
       :completed-groups="game.completedGroups.value"
       :result-message="game.resultMessage.value"

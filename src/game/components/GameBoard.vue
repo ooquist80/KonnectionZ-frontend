@@ -1,10 +1,13 @@
 <template>
   <section class="game-board">
-    <h2>{{ title }}</h2>
-
     <ApiErrorBanner :message="errorMessage" />
 
-    <p v-if="resultMessage" :class="resultClass">{{ resultMessage }}</p>
+    <!-- Floating result toast -->
+    <Transition name="toast">
+      <div v-if="toastMessage" class="toast" :class="toastClass">
+        {{ toastMessage }}
+      </div>
+    </Transition>
 
     <!-- Completed groups -->
     <div
@@ -24,7 +27,7 @@
         :key="word"
         type="button"
         class="word-btn"
-        :class="{ selected: selectedWords.has(word) }"
+        :class="{ selected: selectedWords.has(word), shake: isShaking && selectedWords.has(word) }"
         @click="toggleWord(word)"
       >
         {{ word }}
@@ -64,12 +67,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { nextTick, reactive, ref, watch } from 'vue'
 import type { WordsetRead } from '../../shared/types/api'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
 
 const props = defineProps<{
-  title: string
   wordsRemaining: string[]
   completedGroups: WordsetRead[]
   resultMessage: string | null
@@ -81,40 +83,68 @@ const emit = defineEmits<{
   submitWords: [words: string[]]
 }>()
 
+// ── Toast ─────────────────────────────────────────────────────────────────────
+
+const toastMessage = ref<string | null>(null)
+const toastClass = ref('')
+
+let toastTimer: ReturnType<typeof setTimeout> | null = null
+
+watch(
+  () => props.resultMessage,
+  (msg) => {
+    if (!msg) return
+    if (toastTimer) clearTimeout(toastTimer)
+
+    if (msg.startsWith('Almost')) toastClass.value = 'toast-almost'
+    else if (msg.startsWith('Incorrect')) toastClass.value = 'toast-incorrect'
+    else toastClass.value = 'toast-correct'
+
+    toastMessage.value = msg
+    toastTimer = setTimeout(() => { toastMessage.value = null }, 2200)
+  },
+)
+
+// ── Shake ─────────────────────────────────────────────────────────────────────
+
+const isShaking = ref(false)
+let shakeTimer: ReturnType<typeof setTimeout> | null = null
+
+watch(
+  () => props.resultMessage,
+  (msg) => {
+    if (msg?.startsWith('Incorrect') || msg?.startsWith('Almost')) {
+      if (shakeTimer) clearTimeout(shakeTimer)
+      isShaking.value = false
+      nextTick(() => {
+        isShaking.value = true
+        shakeTimer = setTimeout(() => { isShaking.value = false }, 600)
+      })
+    }
+  },
+)
+
+// ── Word grid ─────────────────────────────────────────────────────────────────
+
 const selectedWords = reactive(new Set<string>())
 const displayWords = ref<string[]>([])
 
-const resultClass = computed(() => {
-  const msg = props.resultMessage
-  if (!msg) return ''
-  if (msg.startsWith('Almost')) return 'result result-almost'
-  if (msg.startsWith('Incorrect')) return 'result result-incorrect'
-  return 'result result-correct'
-})
-// Sync local display order with remaining words from the server
 watch(
   () => props.wordsRemaining,
   (remaining) => {
     const remainingSet = new Set(remaining)
 
-    // Remove selections that are no longer remaining
     for (const word of selectedWords) {
-      if (!remainingSet.has(word)) {
-        selectedWords.delete(word)
-      }
+      if (!remainingSet.has(word)) selectedWords.delete(word)
     }
 
-    // Keep existing order for words still present, append any new ones
     const kept = displayWords.value.filter((w) => remainingSet.has(w))
     const keptSet = new Set(kept)
     const added = remaining.filter((w) => !keptSet.has(w))
     displayWords.value = [...kept, ...added]
 
-    // Auto-select all words when only the last wordset (4 words) remains
     if (remaining.length === 4) {
-      for (const word of remaining) {
-        selectedWords.add(word)
-      }
+      for (const word of remaining) selectedWords.add(word)
     }
   },
   { immediate: true },
@@ -144,8 +174,6 @@ function shuffleWords() {
 function onSubmit() {
   if (selectedWords.size !== 4) return
   emit('submitWords', [...selectedWords])
-  // Selection is only cleared when wordsRemaining changes (correct guess removes words).
-  // On an incorrect guess, the selection stays so the user can see what they picked.
 }
 </script>
 
@@ -155,9 +183,36 @@ function onSubmit() {
   gap: 0.75rem;
   max-width: 480px;
   margin: 0 auto;
+  position: relative;
 }
 
-/* Completed groups */
+/* ── Toast ───────────────────────────────────────────────────────────────────── */
+
+.toast {
+  position: absolute;
+  top: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  white-space: nowrap;
+  padding: 0.55rem 1.25rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.toast-correct   { background: #16a34a; color: #fff; }
+.toast-almost    { background: #d97706; color: #fff; }
+.toast-incorrect { background: #dc2626; color: #fff; }
+
+.toast-enter-active { transition: opacity 0.2s ease, transform 0.2s ease; }
+.toast-leave-active { transition: opacity 0.4s ease, transform 0.4s ease; }
+.toast-enter-from   { opacity: 0; transform: translateX(-50%) translateY(-80%); }
+.toast-leave-to     { opacity: 0; transform: translateX(-50%) translateY(-110%); }
+
+/* ── Completed groups ────────────────────────────────────────────────────────── */
+
 .completed-group {
   display: flex;
   flex-direction: column;
@@ -178,12 +233,13 @@ function onSubmit() {
   font-size: 0.85rem;
 }
 
-.difficulty-1 { background: #fef08a; color: #713f12; }
+.difficulty-1 { background: #bbf7d0; color: #14532d; }
 .difficulty-2 { background: #86efac; color: #14532d; }
 .difficulty-3 { background: #93c5fd; color: #1e3a5f; }
 .difficulty-4 { background: #c4b5fd; color: #3b0764; }
 
-/* Word grid */
+/* ── Word grid ───────────────────────────────────────────────────────────────── */
+
 .word-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -208,48 +264,24 @@ function onSubmit() {
   line-height: 1.2;
 }
 
-.word-btn:hover {
-  background: #d1d5db;
+.word-btn:hover  { background: #d1d5db; }
+.word-btn:active { transform: scale(0.96); }
+
+.word-btn.selected       { background: #2563eb; color: #fff; }
+.word-btn.selected:hover { background: #1d4ed8; }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15%       { transform: translateX(-6px); }
+  35%       { transform: translateX(6px); }
+  55%       { transform: translateX(-4px); }
+  75%       { transform: translateX(4px); }
 }
 
-.word-btn:active {
-  transform: scale(0.96);
-}
+.word-btn.shake { animation: shake 0.5s ease-in-out; }
 
-.word-btn.selected {
-  background: #16a34a;
-  color: #fff;
-}
+/* ── Actions ─────────────────────────────────────────────────────────────────── */
 
-.word-btn.selected:hover {
-  background: #15803d;
-}
-
-/* Result banner */
-.result {
-  margin: 0;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  text-align: center;
-  font-weight: 500;
-}
-
-.result-correct {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.result-almost {
-  background: #fef9c3;
-  color: #854d0e;
-}
-
-.result-incorrect {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-/* Actions row */
 .actions {
   display: flex;
   align-items: center;

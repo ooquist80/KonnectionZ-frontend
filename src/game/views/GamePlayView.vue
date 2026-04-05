@@ -1,7 +1,7 @@
 <template>
   <section class="game-play-view">
     <div class="view-header">
-      <h1>Puzzle</h1>
+      <h1>{{ game.gameName.value ?? 'Puzzle' }}</h1>
       <RouterLink to="/game" class="back-link">Back to game list</RouterLink>
     </div>
 
@@ -9,7 +9,6 @@
 
     <GameBoard
       v-if="game.currentResult.value"
-      :title="game.gameName.value ?? 'Game'"
       :words-remaining="game.wordsRemaining.value"
       :completed-groups="game.completedGroups.value"
       :result-message="game.resultMessage.value"
