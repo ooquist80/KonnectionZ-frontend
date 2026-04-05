@@ -5,19 +5,32 @@
       <p>Manage your account details.</p>
     </div>
 
+    <!-- Read-only profile card -->
     <div v-if="auth.user.value" class="profile-card">
       <div class="profile-row">
         <span class="label">User ID</span>
         <strong>#{{ auth.user.value.id }}</strong>
       </div>
       <div class="profile-row">
+        <span class="label">Username</span>
+        <strong>{{ auth.user.value.username }}</strong>
+      </div>
+      <div class="profile-row">
+        <span class="label">Email</span>
+        <strong>{{ auth.user.value.email }}</strong>
+      </div>
+      <div class="profile-row">
         <span class="label">Scopes</span>
         <strong>{{ auth.user.value.scopes.length ? auth.user.value.scopes.join(', ') : 'No scopes assigned' }}</strong>
       </div>
+      <div class="card-actions">
+        <button v-if="!isEditing" class="btn-secondary" @click="startEditing">Edit</button>
+        <button v-else class="btn-secondary" @click="cancelEditing">Cancel</button>
+      </div>
     </div>
 
-    <!-- Edit username & email -->
-    <div class="section">
+    <!-- Edit profile form (only in edit mode) -->
+    <div v-if="isEditing" class="section">
       <h2>Edit profile</h2>
       <div v-if="profileSuccess" class="success-banner">{{ profileSuccess }}</div>
       <div v-if="profileError" class="error-banner">{{ profileError }}</div>
@@ -28,26 +41,25 @@
         <label for="email">Email</label>
         <input id="email" v-model="email" type="email" required autocomplete="email" />
 
-        <button type="submit" :disabled="profileLoading">
-          {{ profileLoading ? 'Saving...' : 'Save changes' }}
-        </button>
-      </form>
-    </div>
+        <!-- Change password toggle -->
+        <label class="checkbox-label">
+          <input type="checkbox" v-model="showPasswordChange" />
+          Change password
+        </label>
 
-    <!-- Change password -->
-    <div class="section">
-      <h2>Change password</h2>
-      <div v-if="passwordSuccess" class="success-banner">{{ passwordSuccess }}</div>
-      <div v-if="passwordError" class="error-banner">{{ passwordError }}</div>
-      <form @submit.prevent="onChangePassword">
-        <label for="new-password">New password</label>
-        <input id="new-password" v-model="newPassword" type="password" required autocomplete="new-password" />
+        <template v-if="showPasswordChange">
+          <div v-if="passwordSuccess" class="success-banner">{{ passwordSuccess }}</div>
+          <div v-if="passwordError" class="error-banner">{{ passwordError }}</div>
 
-        <label for="confirm-password">Confirm new password</label>
-        <input id="confirm-password" v-model="confirmPassword" type="password" required autocomplete="new-password" />
+          <label for="new-password">New password</label>
+          <input id="new-password" v-model="newPassword" type="password" autocomplete="new-password" />
 
-        <button type="submit" :disabled="passwordLoading">
-          {{ passwordLoading ? 'Updating...' : 'Change password' }}
+          <label for="confirm-password">Confirm new password</label>
+          <input id="confirm-password" v-model="confirmPassword" type="password" autocomplete="new-password" />
+        </template>
+
+        <button type="submit" :disabled="profileLoading || passwordLoading">
+          {{ profileLoading || passwordLoading ? 'Saving...' : 'Save changes' }}
         </button>
       </form>
     </div>
@@ -60,6 +72,9 @@ import { useAuthStore } from '../store/authStore'
 
 const auth = useAuthStore()
 
+const isEditing = ref(false)
+const showPasswordChange = ref(false)
+
 const username = ref(auth.user.value?.username ?? '')
 const email = ref(auth.user.value?.email ?? '')
 
@@ -71,23 +86,28 @@ watch(auth.user, (u) => {
   }
 })
 
+function startEditing() {
+  username.value = auth.user.value?.username ?? ''
+  email.value = auth.user.value?.email ?? ''
+  profileError.value = ''
+  profileSuccess.value = ''
+  isEditing.value = true
+}
+
+function cancelEditing() {
+  isEditing.value = false
+  showPasswordChange.value = false
+  newPassword.value = ''
+  confirmPassword.value = ''
+  profileError.value = ''
+  profileSuccess.value = ''
+  passwordError.value = ''
+  passwordSuccess.value = ''
+}
+
 const profileLoading = ref(false)
 const profileError = ref('')
 const profileSuccess = ref('')
-
-async function onSaveProfile() {
-  profileError.value = ''
-  profileSuccess.value = ''
-  profileLoading.value = true
-  try {
-    await auth.updateProfile({ username: username.value, email: email.value })
-    profileSuccess.value = 'Profile updated successfully.'
-  } catch (err: unknown) {
-    profileError.value = extractErrorMessage(err) ?? 'Failed to update profile.'
-  } finally {
-    profileLoading.value = false
-  }
-}
 
 const newPassword = ref('')
 const confirmPassword = ref('')
@@ -95,29 +115,51 @@ const passwordLoading = ref(false)
 const passwordError = ref('')
 const passwordSuccess = ref('')
 
-async function onChangePassword() {
+async function onSaveProfile() {
+  profileError.value = ''
+  profileSuccess.value = ''
   passwordError.value = ''
   passwordSuccess.value = ''
 
-  if (newPassword.value !== confirmPassword.value) {
-    passwordError.value = 'Passwords do not match.'
-    return
+  if (showPasswordChange.value) {
+    if (newPassword.value !== confirmPassword.value) {
+      passwordError.value = 'Passwords do not match.'
+      return
+    }
   }
 
-  passwordLoading.value = true
+  profileLoading.value = true
   try {
-    await auth.changePassword(
-      auth.user.value!.username,
-      auth.user.value!.email,
-      newPassword.value,
-    )
-    passwordSuccess.value = 'Password changed successfully.'
-    newPassword.value = ''
-    confirmPassword.value = ''
+    await auth.updateProfile({ username: username.value, email: email.value })
+    profileSuccess.value = 'Profile updated successfully.'
   } catch (err: unknown) {
-    passwordError.value = extractErrorMessage(err) ?? 'Failed to change password.'
+    profileError.value = extractErrorMessage(err) ?? 'Failed to update profile.'
+    return
   } finally {
-    passwordLoading.value = false
+    profileLoading.value = false
+  }
+
+  if (showPasswordChange.value && newPassword.value) {
+    passwordLoading.value = true
+    try {
+      await auth.changePassword(
+        username.value,
+        email.value,
+        newPassword.value,
+      )
+      passwordSuccess.value = 'Password changed successfully.'
+      newPassword.value = ''
+      confirmPassword.value = ''
+      showPasswordChange.value = false
+    } catch (err: unknown) {
+      passwordError.value = extractErrorMessage(err) ?? 'Failed to change password.'
+    } finally {
+      passwordLoading.value = false
+    }
+  }
+
+  if (!passwordError.value) {
+    isEditing.value = false
   }
 }
 
@@ -170,6 +212,10 @@ function extractErrorMessage(err: unknown): string | null {
   letter-spacing: 0.04em;
 }
 
+.card-actions {
+  margin-top: 0.25rem;
+}
+
 .section {
   display: grid;
   gap: 0.75rem;
@@ -186,11 +232,42 @@ form {
   max-width: 26rem;
 }
 
+
 input {
   font: inherit;
   padding: 0.5rem 1rem;
   border: 1px solid #d1d5db;
   border-radius: 2rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-top: 0.25rem;
+}
+
+.checkbox-label input[type='checkbox'] {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  border-radius: 2rem;
+  padding: 0.4rem 1.1rem;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #374151;
+}
+
+.btn-secondary:hover {
+  background: #f3f4f6;
 }
 
 .success-banner {
