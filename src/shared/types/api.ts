@@ -10,7 +10,7 @@ export interface PlayGameSet {
   id: number
   name: string
   daily: boolean
-  turn_count: number | null
+  miss_count: number | null
   start_time: string | null
   end_time: string | null
 }
@@ -33,6 +33,7 @@ export interface GameStatus {
   end_time: string | null
   words_remaining: string[]
   wordsets_completed: WordsetRead[]
+  miss_count: number
   turn_count: number
 }
 
@@ -45,14 +46,14 @@ export interface PlayResult {
 export interface GameSetRead {
   id: number
   date: string
-  daily: boolean
+  daily_date: string | null
   name: string
   wordsets: WordsetRead[]
 }
 
 export interface GameSetWrite {
   name: string
-  daily: boolean
+  daily_date: string | null
   date?: string
   wordsets: number[]
 }
@@ -76,4 +77,11 @@ export interface ApiValidationError {
     msg: string
     type: string
   }>
+}
+
+export interface AnnouncementRead {
+  id: number
+  user_id: number | null
+  announced_at: string
+  content: string
 }

@@ -3,19 +3,18 @@
     <ApiErrorBanner :message="errorMessage" />
 
     <!-- Create gameset form -->
-    <details class="create-section">
+    <details class="create-section" @toggle="onFormToggle">
       <summary>Create new gameset</summary>
       <form class="create-form" @submit.prevent="onCreateGameset">
         <label for="gs-name">Name</label>
         <input id="gs-name" v-model="form.name" required placeholder="e.g. Daily 2026-04-03" />
 
-        <label class="checkbox-label">
-          <input type="checkbox" v-model="form.daily" />
-          Daily game
-        </label>
+        <label for="gs-daily-date">Daily date <span class="muted">(optional)</span></label>
+        <input id="gs-daily-date" type="date" v-model="form.dailyDate" />
 
         <label>Select 4 wordsets</label>
-        <div v-if="availableWordsets.length" class="wordset-picker">
+        <p v-if="wordsetsLoading" class="muted">Loading wordsets...</p>
+        <div v-else-if="availableWordsets.length" class="wordset-picker">
           <label
             v-for="ws in availableWordsets"
             :key="ws.id"
@@ -48,7 +47,7 @@
       <div v-for="gs in gamesets" :key="gs.id" class="gameset-card">
         <div class="gameset-header">
           <strong>{{ gs.name }}</strong>
-          <span class="muted">ID #{{ gs.id }} · {{ new Date(gs.date).toLocaleDateString() }}{{ gs.daily ? ' · 📅' : '' }}</span>
+          <span class="muted">ID #{{ gs.id }} · {{ new Date(gs.date).toLocaleDateString() }}{{ gs.daily_date ? ' · 📅 ' + new Date(gs.daily_date).toLocaleDateString() : '' }}</span>
         </div>
         <div class="wordset-tags">
           <span v-for="ws in gs.wordsets" :key="ws.id" class="tag">
@@ -72,9 +71,10 @@ const auth = useAuthStore()
 const gamesets = ref<GameSetRead[]>([])
 const availableWordsets = ref<WordsetRead[]>([])
 const isLoading = ref(false)
+const wordsetsLoading = ref(false)
 const errorMessage = ref<string | null>(null)
 
-const form = reactive({ name: '', daily: false, wordsetIds: new Set<number>() })
+const form = reactive({ name: '', dailyDate: '', wordsetIds: new Set<number>() })
 
 function token(): string {
   return auth.token.value!
@@ -88,17 +88,33 @@ function toggleWordset(id: number) {
   }
 }
 
-async function loadData() {
+async function loadGamesets() {
   isLoading.value = true
   errorMessage.value = null
   try {
-    const [gs, ws] = await Promise.all([listGamesets(token()), listWordsets(token())])
-    gamesets.value = gs
-    availableWordsets.value = ws
+    gamesets.value = await listGamesets(token())
   } catch (e) {
-    errorMessage.value = e instanceof Error ? e.message : 'Failed to load data'
+    errorMessage.value = e instanceof Error ? e.message : 'Failed to load gamesets'
   } finally {
     isLoading.value = false
+  }
+}
+
+async function loadWordsets() {
+  if (availableWordsets.value.length) return
+  wordsetsLoading.value = true
+  try {
+    availableWordsets.value = await listWordsets(token())
+  } catch (e) {
+    errorMessage.value = e instanceof Error ? e.message : 'Failed to load wordsets'
+  } finally {
+    wordsetsLoading.value = false
+  }
+}
+
+function onFormToggle(e: Event) {
+  if ((e.target as HTMLDetailsElement).open) {
+    void loadWordsets()
   }
 }
 
@@ -108,11 +124,15 @@ async function onCreateGameset() {
   isLoading.value = true
   errorMessage.value = null
   try {
-    await createGameset(token(), { name: form.name, daily: form.daily, wordsets: [...form.wordsetIds] })
+    await createGameset(token(), {
+      name: form.name,
+      daily_date: form.dailyDate ? new Date(form.dailyDate).toISOString() : null,
+      wordsets: [...form.wordsetIds],
+    })
     form.name = ''
-    form.daily = false
+    form.dailyDate = ''
     form.wordsetIds.clear()
-    await loadData()
+    await loadGamesets()
   } catch (e) {
     errorMessage.value = e instanceof Error ? e.message : 'Failed to create gameset'
   } finally {
@@ -120,7 +140,7 @@ async function onCreateGameset() {
   }
 }
 
-onMounted(loadData)
+onMounted(loadGamesets)
 </script>
 
 <style scoped>
@@ -152,20 +172,13 @@ summary {
 }
 
 .create-form input[type="text"],
+.create-form input[type="date"],
 .create-form > input {
   font: inherit;
   padding: 0.5rem 1rem;
   border: 1px solid #d1d5db;
   border-radius: 2rem;
   max-width: 30rem;
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  font-weight: 600;
 }
 
 .wordset-picker {

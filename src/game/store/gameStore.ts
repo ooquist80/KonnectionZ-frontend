@@ -20,6 +20,7 @@ export function useGameStore() {
 
   const wordsRemaining = computed(() => currentResult.value?.game_status.words_remaining ?? [])
   const completedGroups = computed(() => currentResult.value?.game_status.wordsets_completed ?? [])
+  const missCount = computed(() => currentResult.value?.game_status.miss_count ?? 0)
   const resultMessage = computed(() =>
     resultMessageOverride.value !== undefined
       ? resultMessageOverride.value
@@ -95,6 +96,7 @@ export function useGameStore() {
     gameName,
     wordsRemaining,
     completedGroups,
+    missCount,
     resultMessage,
     isLoading,
     errorMessage,

@@ -59,6 +59,13 @@ export function updateAvatar(token: string, avatar: string): Promise<void> {
   })
 }
 
+export function getUser(token: string, userId: number): Promise<UserRead> {
+  return requestJson<UserRead>(`/users/${userId}`, {
+    method: 'GET',
+    token,
+  })
+}
+
 export function updateMe(
   token: string,
   body: UserWrite,

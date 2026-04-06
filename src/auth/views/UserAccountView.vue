@@ -1,12 +1,13 @@
 <template>
-  <section class="profile-view">
-    <div class="profile-header">
-      <h1>User profile</h1>
+  <section class="account-view">
+    <div class="account-header">
+      <RouterLink to="/" class="back-link">← Back</RouterLink>
+      <h1>User account</h1>
       <p>Manage your account details.</p>
     </div>
 
-    <!-- Read-only profile card -->
-    <div v-if="auth.user.value" class="profile-card">
+    <!-- Read-only account card -->
+    <div v-if="auth.user.value" class="account-card">
       <div class="avatar-row">
         <img
           v-if="currentAvatarSvg"
@@ -15,33 +16,33 @@
           class="avatar-img"
         />
       </div>
-      <div class="profile-row">
+      <div class="account-row">
         <span class="label">User ID</span>
         <strong>#{{ auth.user.value.id }}</strong>
       </div>
-      <div class="profile-row">
+      <div class="account-row">
         <span class="label">Username</span>
         <strong>{{ auth.user.value.username }}</strong>
       </div>
-      <div class="profile-row">
+      <div class="account-row">
         <span class="label">Email</span>
         <strong>{{ auth.user.value.email }}</strong>
       </div>
-      <div class="profile-row">
+      <div class="account-row">
         <span class="label">Scopes</span>
         <strong>{{ auth.user.value.scopes.length ? auth.user.value.scopes.join(', ') : 'No scopes assigned' }}</strong>
       </div>
       <div class="card-actions">
         <button class="btn-secondary" @click="toggleEditProfile">
-          {{ isEditing ? 'Cancel' : 'Edit profile' }}
+          {{ isEditing ? 'Cancel' : 'Edit account' }}
         </button>
-        <RouterLink to="/profile/avatar" class="btn-secondary">Edit avatar</RouterLink>
+        <RouterLink to="/account/avatar" class="btn-secondary">Edit avatar</RouterLink>
       </div>
     </div>
 
-    <!-- Edit profile form -->
+    <!-- Edit account form -->
     <div v-if="isEditing" class="section">
-      <h2>Edit profile</h2>
+      <h2>Edit account</h2>
       <div v-if="profileSuccess" class="success-banner">{{ profileSuccess }}</div>
       <div v-if="profileError" class="error-banner">{{ profileError }}</div>
       <form @submit.prevent="onSaveProfile">
@@ -141,9 +142,9 @@ async function onSaveProfile() {
   profileLoading.value = true
   try {
     await auth.updateProfile({ username: username.value, email: email.value })
-    profileSuccess.value = 'Profile updated successfully.'
+    profileSuccess.value = 'Account updated successfully.'
   } catch (err: unknown) {
-    profileError.value = extractErrorMessage(err) ?? 'Failed to update profile.'
+    profileError.value = extractErrorMessage(err) ?? 'Failed to update account.'
     return
   } finally {
     profileLoading.value = false
@@ -182,20 +183,35 @@ function extractErrorMessage(err: unknown): string | null {
 </script>
 
 <style scoped>
-.profile-view {
+.back-link {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #1f2937;
+}
+
+.account-view {
+  position: relative;
   gap: 1.5rem;
 }
 
-.profile-header {
+.account-header {
   gap: 0.35rem;
 }
 
-.profile-header p {
+.account-header p {
   margin: 0;
   color: #4b5563;
 }
 
-.profile-card {
+.account-card {
   display: grid;
   gap: 1rem;
   padding: 1.25rem;
@@ -210,13 +226,13 @@ function extractErrorMessage(err: unknown): string | null {
 }
 
 .avatar-img {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   background: #f3f4f6;
 }
 
-.profile-row {
+.account-row {
   display: grid;
   gap: 0.25rem;
 }

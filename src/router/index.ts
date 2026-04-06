@@ -6,7 +6,7 @@ import RegisterView from '../auth/views/RegisterView.vue'
 import DailyGameView from '../game/views/DailyGameView.vue'
 import GameSelectView from '../game/views/GameSelectView.vue'
 import GamePlayView from '../game/views/GamePlayView.vue'
-import UserProfileView from '../auth/views/UserProfileView.vue'
+import UserAccountView from '../auth/views/UserAccountView.vue'
 import AvatarEditorView from '../auth/views/AvatarEditorView.vue'
 import AdminView from '../admin/views/AdminView.vue'
 import UserEditView from '../admin/views/UserEditView.vue'
@@ -20,8 +20,8 @@ const router = createRouter({
     { path: '/daily', name: 'daily', component: DailyGameView, meta: { requiresAuth: true } },
     { path: '/game', name: 'game-select', component: GameSelectView, meta: { requiresAuth: true } },
     { path: '/game/:gamesetId', name: 'game-play', component: GamePlayView, meta: { requiresAuth: true } },
-    { path: '/profile', name: 'profile', component: UserProfileView, meta: { requiresAuth: true } },
-    { path: '/profile/avatar', name: 'avatar-editor', component: AvatarEditorView, meta: { requiresAuth: true } },
+    { path: '/account', name: 'account', component: UserAccountView, meta: { requiresAuth: true } },
+    { path: '/account/avatar', name: 'avatar-editor', component: AvatarEditorView, meta: { requiresAuth: true } },
     { path: '/admin', name: 'admin', component: AdminView, meta: { requiresAuth: true } },
     { path: '/admin/users/:userId', name: 'admin-user-edit', component: UserEditView, meta: { requiresAuth: true } },
   ],

@@ -1,5 +1,6 @@
 <template>
   <section class="admin-view">
+    <RouterLink to="/" class="back-link">← Back</RouterLink>
     <h1>Administration</h1>
 
     <nav class="tab-bar">
@@ -36,7 +37,22 @@ const activeTab = ref<(typeof tabs)[number]['id']>('gamesets')
 </script>
 
 <style scoped>
+.back-link {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #1f2937;
+}
+
 .admin-view {
+  position: relative;
   gap: 1rem;
 }
 

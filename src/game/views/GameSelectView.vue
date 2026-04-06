@@ -1,5 +1,6 @@
 <template>
   <section class="game-select-view">
+    <RouterLink to="/" class="back-link">← Back</RouterLink>
     <h1>Select a game</h1>
 
     <ApiErrorBanner :message="game.errorMessage.value" />
@@ -69,7 +70,22 @@ function gameStatusClass(set: PlayGameSet): string {
 </script>
 
 <style scoped>
+.back-link {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #1f2937;
+}
+
 .game-select-view {
+  position: relative;
   gap: 1rem;
 }
 

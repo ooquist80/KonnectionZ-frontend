@@ -20,6 +20,13 @@
       <span class="group-words">{{ group.words.map((w) => w.word).join(', ') }}</span>
     </div>
 
+    <!-- Miss count -->
+    <!-- Miss count + selection count -->
+    <div v-if="wordsRemaining.length" class="game-meta">
+      <span class="miss-count">Misses: {{ missCount }}</span>
+      <span class="selection-count">{{ selectedWords.size }} of 4 selected</span>
+    </div>
+
     <!-- Word grid -->
     <div v-if="wordsRemaining.length" class="word-grid">
       <button
@@ -36,7 +43,6 @@
 
     <!-- Actions -->
     <div v-if="wordsRemaining.length" class="actions">
-      <span class="selection-count">{{ selectedWords.size }} of 4 selected</span>
       <div class="action-buttons">
         <button
           type="button"
@@ -74,6 +80,7 @@ import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
 const props = defineProps<{
   wordsRemaining: string[]
   completedGroups: WordsetRead[]
+  missCount: number
   resultMessage: string | null
   errorMessage: string | null
   isLoading: boolean
@@ -238,6 +245,17 @@ function onSubmit() {
 .difficulty-3 { background: #93c5fd; color: #1e3a5f; }
 .difficulty-4 { background: #c4b5fd; color: #3b0764; }
 
+/* ── Game meta (misses + selection count) ────────────────────────────────────── */
+
+.game-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
 /* ── Word grid ───────────────────────────────────────────────────────────────── */
 
 .word-grid {
@@ -284,16 +302,7 @@ function onSubmit() {
 
 .actions {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.selection-count {
-  font-size: 0.85rem;
-  color: #6b7280;
-  font-weight: 500;
+  justify-content: flex-end;
 }
 
 .action-buttons {

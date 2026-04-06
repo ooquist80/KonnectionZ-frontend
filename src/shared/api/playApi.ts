@@ -15,6 +15,13 @@ export function listGamesets(token: string): Promise<PlayGameSet[]> {
   })
 }
 
+export function getDailyGameset(token: string): Promise<PlayGameSet> {
+  return requestJson<PlayGameSet>('/play/gamesets/daily', {
+    method: 'GET',
+    token,
+  })
+}
+
 export function createGame(token: string, gamesetId: number): Promise<PlayResult> {
   return requestJson<PlayResult>(`/play/${gamesetId}`, {
     method: 'POST',

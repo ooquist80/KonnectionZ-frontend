@@ -1,7 +1,7 @@
 <template>
   <section class="avatar-editor-view">
     <div class="view-header">
-      <RouterLink to="/profile" class="back-link">← Profile</RouterLink>
+      <RouterLink to="/account" class="back-link">← Account</RouterLink>
       <h1>Edit avatar</h1>
     </div>
 
