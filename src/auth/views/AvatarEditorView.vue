@@ -3,6 +3,7 @@
     <div class="view-header">
       <RouterLink to="/account" class="back-link">← Account</RouterLink>
       <h1>Edit avatar</h1>
+      <button type="button" class="randomize-btn" @click="randomize">🎲 <span class="randomize-label">Randomise</span></button>
     </div>
 
     <div v-if="avatarSuccess" class="success-banner">{{ avatarSuccess }}</div>
@@ -11,7 +12,6 @@
     <AvatarEditor v-model="pendingAvatarStr" />
 
     <div class="save-row">
-      <button type="button" class="btn-secondary" @click="randomize">🎲 Randomise</button>
       <button
         type="button"
         class="btn-primary"
@@ -70,7 +70,41 @@ async function onSaveAvatar() {
 }
 
 .view-header {
+  position: relative;
   gap: 0.25rem;
+}
+
+.randomize-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: transparent;
+  border: 1px solid #d1d5db;
+  border-radius: 2rem;
+  padding: 0.35rem 0.9rem;
+  font: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.randomize-btn:hover {
+  background: #f3f4f6;
+}
+
+@media (max-width: 480px) {
+  .randomize-label {
+    display: none;
+  }
+
+  .randomize-btn {
+    padding: 0.35rem 0.55rem;
+  }
+
+  .btn-primary {
+    width: 100%;
+  }
 }
 
 .back-link {
@@ -91,21 +125,6 @@ async function onSaveAvatar() {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
-}
-
-.btn-secondary {
-  background: transparent;
-  border: 1px solid #d1d5db;
-  border-radius: 2rem;
-  padding: 0.5rem 1.2rem;
-  font: inherit;
-  font-size: 0.95rem;
-  cursor: pointer;
-  color: #374151;
-}
-
-.btn-secondary:hover {
-  background: #f3f4f6;
 }
 
 .btn-primary {

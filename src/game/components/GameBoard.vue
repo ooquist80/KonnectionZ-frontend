@@ -264,6 +264,12 @@ function onSubmit() {
   gap: 0.5rem;
 }
 
+@media (max-width: 480px) {
+  .word-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 .word-btn {
   font: inherit;
   font-size: 0.85rem;

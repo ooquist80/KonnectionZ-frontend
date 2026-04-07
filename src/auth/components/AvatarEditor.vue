@@ -1,213 +1,40 @@
 <template>
   <div class="avatar-editor">
-    <!-- Live preview -->
     <div class="preview-area">
       <img :src="previewSvg" alt="Avatar preview" class="avatar-preview-lg" />
     </div>
 
-    <!-- Option sections -->
-    <div class="sections">
+    <div class="category-grid">
+      <div v-for="cat in categories" :key="cat.label" class="category-card">
+        <span class="card-label">{{ cat.label }}</span>
 
-      <div class="option-group">
-        <span class="option-label">Skin colour</span>
-        <div class="swatch-row">
+        <!-- Type carousel -->
+        <div v-if="cat.typeList" class="carousel">
+          <button type="button" class="carousel-btn" @click="cycle(cat.typeKey, cat.typeList, -1)">‹</button>
+          <span class="carousel-value">{{ typeLabel(cat) }}</span>
+          <button type="button" class="carousel-btn" @click="cycle(cat.typeKey, cat.typeList, 1)">›</button>
+        </div>
+
+        <!-- Graphic sub-carousel (clothing only) -->
+        <div v-if="cat.typeKey === 'clothing' && options.clothing === 'graphicShirt'" class="carousel">
+          <button type="button" class="carousel-btn" @click="cycle('clothingGraphic', CLOTHING_GRAPHIC_OPTIONS, -1)">‹</button>
+          <span class="carousel-value carousel-value-sm">{{ formatLabel(options.clothingGraphic) }}</span>
+          <button type="button" class="carousel-btn" @click="cycle('clothingGraphic', CLOTHING_GRAPHIC_OPTIONS, 1)">›</button>
+        </div>
+
+        <!-- Color swatches -->
+        <div v-if="cat.colorList && showColors(cat)" class="swatch-row">
           <button
-            v-for="color in SKIN_COLORS"
+            v-for="color in cat.colorList"
             :key="color"
             type="button"
             class="swatch"
-            :class="{ active: options.skinColor === color }"
-            :style="{ background: '#' + color }"
-            @click="set('skinColor', color)"
-          />
-        </div>
-      </div>
-
-      <div class="option-group">
-        <span class="option-label">Hair / Top</span>
-        <div class="chip-row">
-          <button
-            v-for="val in TOP_OPTIONS"
-            :key="val"
-            type="button"
-            class="chip"
-            :class="{ active: options.top === val }"
-            @click="set('top', val)"
-          >{{ label(val) }}</button>
-        </div>
-        <div class="swatch-row mt-xs">
-          <button
-            v-for="color in HAIR_COLORS"
-            :key="color"
-            type="button"
-            class="swatch"
-            :class="{ active: options.hairColor === color }"
-            :style="{ background: '#' + color }"
-            @click="set('hairColor', color)"
-          />
-        </div>
-      </div>
-
-      <div class="option-group">
-        <span class="option-label">Eyes</span>
-        <div class="chip-row">
-          <button
-            v-for="val in EYES_OPTIONS"
-            :key="val"
-            type="button"
-            class="chip"
-            :class="{ active: options.eyes === val }"
-            @click="set('eyes', val)"
-          >{{ label(val) }}</button>
-        </div>
-      </div>
-
-      <div class="option-group">
-        <span class="option-label">Eyebrows</span>
-        <div class="chip-row">
-          <button
-            v-for="val in EYEBROWS_OPTIONS"
-            :key="val"
-            type="button"
-            class="chip"
-            :class="{ active: options.eyebrows === val }"
-            @click="set('eyebrows', val)"
-          >{{ label(val) }}</button>
-        </div>
-      </div>
-
-      <div class="option-group">
-        <span class="option-label">Mouth</span>
-        <div class="chip-row">
-          <button
-            v-for="val in MOUTH_OPTIONS"
-            :key="val"
-            type="button"
-            class="chip"
-            :class="{ active: options.mouth === val }"
-            @click="set('mouth', val)"
-          >{{ label(val) }}</button>
-        </div>
-      </div>
-
-      <div class="option-group">
-        <span class="option-label">Accessories</span>
-        <div class="chip-row">
-          <button
-            type="button"
-            class="chip"
-            :class="{ active: options.accessories === null }"
-            @click="set('accessories', null)"
-          >None</button>
-          <button
-            v-for="val in ACCESSORIES_OPTIONS"
-            :key="val"
-            type="button"
-            class="chip"
-            :class="{ active: options.accessories === val }"
-            @click="set('accessories', val)"
-          >{{ label(val) }}</button>
-        </div>
-        <Transition name="fade">
-          <div v-if="options.accessories !== null" class="swatch-row mt-xs">
-            <button
-              v-for="color in ACCESSORIES_COLORS"
-              :key="color"
-              type="button"
-              class="swatch"
-              :class="{ active: options.accessoriesColor === color }"
-              :style="{ background: '#' + color }"
-              @click="set('accessoriesColor', color)"
-            />
-          </div>
-        </Transition>
-      </div>
-
-      <div class="option-group">
-        <span class="option-label">Clothing</span>
-        <div class="chip-row">
-          <button
-            v-for="val in CLOTHING_OPTIONS"
-            :key="val"
-            type="button"
-            class="chip"
-            :class="{ active: options.clothing === val }"
-            @click="set('clothing', val)"
-          >{{ label(val) }}</button>
-        </div>
-        <div class="swatch-row mt-xs">
-          <button
-            v-for="color in CLOTHES_COLORS"
-            :key="color"
-            type="button"
-            class="swatch"
-            :class="{ active: options.clothesColor === color }"
-            :style="{ background: '#' + color }"
-            @click="set('clothesColor', color)"
-          />
-        </div>
-        <Transition name="fade">
-          <div v-if="options.clothing === 'graphicShirt'" class="chip-row mt-xs">
-            <button
-              v-for="val in CLOTHING_GRAPHIC_OPTIONS"
-              :key="val"
-              type="button"
-              class="chip"
-              :class="{ active: options.clothingGraphic === val }"
-              @click="set('clothingGraphic', val)"
-            >{{ label(val) }}</button>
-          </div>
-        </Transition>
-      </div>
-
-      <div class="option-group">
-        <span class="option-label">Facial hair</span>
-        <div class="chip-row">
-          <button
-            type="button"
-            class="chip"
-            :class="{ active: options.facialHair === null }"
-            @click="set('facialHair', null)"
-          >None</button>
-          <button
-            v-for="val in FACIAL_HAIR_OPTIONS"
-            :key="val"
-            type="button"
-            class="chip"
-            :class="{ active: options.facialHair === val }"
-            @click="set('facialHair', val)"
-          >{{ label(val) }}</button>
-        </div>
-        <Transition name="fade">
-          <div v-if="options.facialHair !== null" class="swatch-row mt-xs">
-            <button
-              v-for="color in FACIAL_HAIR_COLORS"
-              :key="color"
-              type="button"
-              class="swatch"
-              :class="{ active: options.facialHairColor === color }"
-              :style="{ background: '#' + color }"
-              @click="set('facialHairColor', color)"
-            />
-          </div>
-        </Transition>
-      </div>
-
-      <div class="option-group">
-        <span class="option-label">Background</span>
-        <div class="swatch-row">
-          <button
-            v-for="color in BG_COLORS"
-            :key="color"
-            type="button"
-            class="swatch"
-            :class="{ active: options.backgroundColor === color }"
+            :class="{ active: isActiveColor(cat.colorKey, color) }"
             :style="swatchBg(color)"
-            @click="set('backgroundColor', color)"
+            @click="setOption(cat.colorKey, color)"
           />
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -232,10 +59,49 @@ watch(
   (val) => { Object.assign(options, parseAvatarString(val)) },
 )
 
-function set<K extends keyof AvatarOptions>(key: K, value: AvatarOptions[K]) {
-  options[key] = value
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function setOption(key: keyof AvatarOptions | null, value: string | null) {
+  if (!key) return
+  ;(options as Record<string, string | null>)[key] = value
   emit('update:modelValue', serializeAvatarOptions({ ...options }))
 }
+
+function cycle(key: keyof AvatarOptions | null, list: (string | null)[] | null, dir: number) {
+  if (!key || !list) return
+  const val = options[key]
+  const idx = list.indexOf(val as string | null)
+  const next = idx === -1 ? 0 : (idx + dir + list.length) % list.length
+  setOption(key, list[next])
+}
+
+interface CategoryDef {
+  label: string
+  typeKey: keyof AvatarOptions | null
+  typeList: (string | null)[] | null
+  colorKey: keyof AvatarOptions | null
+  colorList: string[] | null
+  hideColorWhenNull: boolean
+}
+
+function typeLabel(cat: CategoryDef): string {
+  if (!cat.typeKey) return ''
+  const val = options[cat.typeKey]
+  if (val === null) return 'None'
+  return formatLabel(val as string)
+}
+
+function showColors(cat: CategoryDef): boolean {
+  if (!cat.hideColorWhenNull || !cat.typeKey) return true
+  return options[cat.typeKey] !== null
+}
+
+function isActiveColor(colorKey: keyof AvatarOptions | null, color: string): boolean {
+  if (!colorKey) return false
+  return options[colorKey] === color
+}
+
+// ── Preview ───────────────────────────────────────────────────────────────────
 
 const previewSvg = computed(() => {
   const svg = createAvatar(avataaars, {
@@ -260,7 +126,7 @@ const previewSvg = computed(() => {
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
 })
 
-function label(val: string): string {
+function formatLabel(val: string): string {
   return val
     .replace(/([A-Z])/g, ' $1')
     .replace(/(\d+)/g, ' $1')
@@ -325,6 +191,20 @@ const ACCESSORIES_COLORS = ['262e33','3c4f5c','25557c','5199e4','65c9ff','929598
 const CLOTHES_COLORS = ['262e33','3c4f5c','25557c','5199e4','65c9ff','929598','a7ffc4','b1e2ff','e6e6e6','ff488e','ff5c5c','ffafb9','ffffb1','ffffff']
 const FACIAL_HAIR_COLORS = ['2c1b18','4a312c','724133','a55728','b58143','c93305','d6b370','e8e1e1','ecdcbf','f59797']
 const BG_COLORS      = ['transparent','b6e3f4','c0aede','d1d4f9','ffd5dc','ffeba4','a3d977','65c9ff','ff9a00','e8e1e1']
+
+// ── Categories ────────────────────────────────────────────────────────────────
+
+const categories: CategoryDef[] = [
+  { label: 'Skin',        typeKey: null,           typeList: null,                              colorKey: 'skinColor',        colorList: SKIN_COLORS,        hideColorWhenNull: false },
+  { label: 'Background',  typeKey: null,           typeList: null,                              colorKey: 'backgroundColor', colorList: BG_COLORS,           hideColorWhenNull: false },
+  { label: 'Hair',        typeKey: 'top',          typeList: TOP_OPTIONS,                       colorKey: 'hairColor',        colorList: HAIR_COLORS,        hideColorWhenNull: false },
+  { label: 'Clothing',    typeKey: 'clothing',     typeList: CLOTHING_OPTIONS,                  colorKey: 'clothesColor',     colorList: CLOTHES_COLORS,      hideColorWhenNull: false },
+  { label: 'Glasses',     typeKey: 'accessories',  typeList: [null, ...ACCESSORIES_OPTIONS],    colorKey: 'accessoriesColor', colorList: ACCESSORIES_COLORS,  hideColorWhenNull: true },
+  { label: 'Facial hair', typeKey: 'facialHair',   typeList: [null, ...FACIAL_HAIR_OPTIONS],    colorKey: 'facialHairColor',  colorList: FACIAL_HAIR_COLORS,  hideColorWhenNull: true },
+  { label: 'Eyes',        typeKey: 'eyes',         typeList: EYES_OPTIONS,                      colorKey: null,               colorList: null,               hideColorWhenNull: false },
+  { label: 'Brows',       typeKey: 'eyebrows',     typeList: EYEBROWS_OPTIONS,                  colorKey: null,               colorList: null,               hideColorWhenNull: false },
+  { label: 'Mouth',       typeKey: 'mouth',        typeList: MOUTH_OPTIONS,                     colorKey: null,               colorList: null,               hideColorWhenNull: false },
+]
 </script>
 
 <style scoped>
@@ -345,64 +225,87 @@ const BG_COLORS      = ['transparent','b6e3f4','c0aede','d1d4f9','ffd5dc','ffeba
   background: #f3f4f6;
 }
 
-.sections {
+/* ── Category grid ─────────────────────────────────────────────────────────── */
+
+.category-grid {
   display: grid;
-  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
 }
 
-.option-group {
+.category-card {
   display: grid;
   gap: 0.4rem;
+  padding: 0.6rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.5);
+  align-content: start;
 }
 
-.option-label {
-  font-size: 0.8rem;
+.card-label {
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #6b7280;
 }
 
-/* Chips */
-.chip-row {
+/* ── Carousel ──────────────────────────────────────────────────────────────── */
+
+.carousel {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
+  align-items: center;
+  gap: 0.25rem;
 }
 
-.chip {
+.carousel-btn {
   font: inherit;
-  font-size: 0.75rem;
-  padding: 0.2rem 0.6rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid #d1d5db;
-  border-radius: 2rem;
+  border-radius: 0.375rem;
   background: #fff;
   color: #374151;
   cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.1s;
+}
+
+.carousel-btn:hover  { background: #f3f4f6; }
+.carousel-btn:active { background: #e5e7eb; }
+
+.carousel-value {
+  flex: 1;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
   white-space: nowrap;
-  transition: background 0.1s, border-color 0.1s, color 0.1s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #1f2937;
 }
 
-.chip:hover {
-  background: #f3f4f6;
+.carousel-value-sm {
+  font-size: 0.7rem;
 }
 
-.chip.active {
-  background: #16a34a;
-  border-color: #16a34a;
-  color: #fff;
-}
+/* ── Colour swatches ───────────────────────────────────────────────────────── */
 
-/* Colour swatches */
 .swatch-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
+  gap: 0.3rem;
 }
 
 .swatch {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: 2px solid transparent;
   cursor: pointer;
@@ -419,17 +322,26 @@ const BG_COLORS      = ['transparent','b6e3f4','c0aede','d1d4f9','ffd5dc','ffeba
   transform: scale(1.15);
 }
 
-.mt-xs {
-  margin-top: 0.25rem;
-}
+/* ── Mobile ────────────────────────────────────────────────────────────────── */
 
-/* Fade transition for conditional colour rows */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.15s;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+@media (max-width: 480px) {
+  .carousel-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.2rem;
+  }
+
+  .carousel-value {
+    display: none;
+  }
+
+  .carousel {
+    justify-content: space-between;
+  }
+
+  .swatch {
+    width: 26px;
+    height: 26px;
+  }
 }
 </style>

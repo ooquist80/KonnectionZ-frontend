@@ -47,15 +47,19 @@
 
     <!-- ── Step 2: Avatar ── -->
     <template v-else>
-      <h1>Create your avatar</h1>
-      <p class="step-subtitle">Customise how you appear to other players. You can change this later.</p>
+      <div class="step2-header">
+        <div>
+          <h1>Create your avatar</h1>
+          <p class="step-subtitle">Customise how you appear to other players. You can change this later.</p>
+        </div>
+        <button type="button" class="randomize-btn" @click="randomize">🎲 <span class="randomize-label">Randomise</span></button>
+      </div>
 
       <div v-if="avatarError" class="error-banner">{{ avatarError }}</div>
 
       <AvatarEditor v-model="pendingAvatarStr" />
 
       <div class="save-row">
-        <button type="button" class="btn-secondary" @click="randomize">🎲 Randomise</button>
         <button type="button" class="btn-secondary" @click="skipAvatar">Skip for now</button>
         <button type="button" class="btn-primary" :disabled="isLoading" @click="onSaveAvatar">
           {{ isLoading ? 'Saving…' : 'Save & continue' }}
@@ -224,6 +228,34 @@ input.input-error {
 }
 
 /* ── Step 2 ── */
+.step2-header {
+  position: relative;
+  padding-right: 5rem;
+}
+
+.step2-header h1 {
+  margin: 0;
+}
+
+.randomize-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: transparent;
+  border: 1px solid #d1d5db;
+  border-radius: 2rem;
+  padding: 0.35rem 0.9rem;
+  font: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.randomize-btn:hover {
+  background: #f3f4f6;
+}
+
 .step-subtitle {
   margin: 0;
   color: #6b7280;
@@ -282,5 +314,20 @@ input.input-error {
 
 .sign-in-link {
   font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .randomize-label {
+    display: none;
+  }
+
+  .randomize-btn {
+    padding: 0.35rem 0.55rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
 }
 </style>

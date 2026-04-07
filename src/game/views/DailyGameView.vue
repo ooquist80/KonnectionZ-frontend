@@ -54,6 +54,11 @@ async function onSubmitWords(words: string[]) {
   font-weight: 600;
   color: #6b7280;
   text-decoration: none;
+  white-space: nowrap;
+}
+
+h1 {
+  padding-right: 5rem;
 }
 
 .back-link:hover {
