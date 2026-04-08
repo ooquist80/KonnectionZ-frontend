@@ -1,9 +1,11 @@
 <template>
   <section class="avatar-editor-view">
     <div class="view-header">
-      <RouterLink to="/account" class="back-link">← Account</RouterLink>
       <h1>Edit avatar</h1>
-      <button type="button" class="randomize-btn" @click="randomize">🎲 <span class="randomize-label">Randomise</span></button>
+      <div class="top-right-actions">
+        <RouterLink to="/account" class="back-link">← Account</RouterLink>
+        <button type="button" class="randomize-btn" @click="randomize">🎲 <span class="randomize-label">Randomise</span></button>
+      </div>
     </div>
 
     <div v-if="avatarSuccess" class="success-banner">{{ avatarSuccess }}</div>
@@ -75,9 +77,6 @@ async function onSaveAvatar() {
 }
 
 .randomize-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
   background: transparent;
   border: 1px solid #d1d5db;
   border-radius: 2rem;
@@ -87,6 +86,16 @@ async function onSaveAvatar() {
   cursor: pointer;
   color: #374151;
   white-space: nowrap;
+}
+
+.top-right-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
 }
 
 .randomize-btn:hover {
