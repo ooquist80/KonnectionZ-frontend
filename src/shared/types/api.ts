@@ -85,3 +85,16 @@ export interface AnnouncementRead {
   announced_at: string
   content: string
 }
+
+export interface CommentRead {
+  id: number
+  announcement_id: number
+  user_name: string
+  commented_at: string
+  content: string
+}
+
+export interface CommentWrite {
+  announcement_id: number
+  content: string
+}
