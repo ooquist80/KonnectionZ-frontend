@@ -1,46 +1,71 @@
 <template>
   <div class="avatar-editor">
+    <!-- Mobile: single card with nav buttons -->
+    <div class="category-nav">
+      <button type="button" class="nav-btn" :disabled="activeCatIndex === 0" @click="activeCatIndex--">‹</button>
+      <span class="nav-label">{{ categories[activeCatIndex].label }} ({{ activeCatIndex + 1 }}/{{ categories.length }})</span>
+      <button type="button" class="nav-btn" :disabled="activeCatIndex === categories.length - 1" @click="activeCatIndex++">›</button>
+    </div>
+
     <div class="preview-area">
       <img :src="previewSvg" alt="Avatar preview" class="avatar-preview-lg" />
     </div>
 
     <div class="category-grid">
-      <div v-for="cat in categories" :key="cat.label" class="category-card">
-        <span class="card-label">{{ cat.label }}</span>
+      <template v-for="(cat, idx) in categories" :key="cat.label">
+        <div class="category-card" :class="{ 'mobile-hidden': idx !== activeCatIndex }">
+          <span class="card-label desktop-only">{{ cat.label }}</span>
 
-        <!-- Type carousel -->
-        <div v-if="cat.typeList" class="carousel">
-          <button type="button" class="carousel-btn" @click="cycle(cat.typeKey, cat.typeList, -1)">‹</button>
-          <span class="carousel-value">{{ typeLabel(cat) }}</span>
-          <button type="button" class="carousel-btn" @click="cycle(cat.typeKey, cat.typeList, 1)">›</button>
-        </div>
+          <!-- Type carousel -->
+          <div v-if="cat.typeList" class="carousel">
+            <button type="button" class="carousel-btn" @click="cycle(cat.typeKey, cat.typeList, -1)">‹</button>
+            <span class="carousel-value">{{ typeLabel(cat) }}</span>
+            <button type="button" class="carousel-btn" @click="cycle(cat.typeKey, cat.typeList, 1)">›</button>
+          </div>
 
-        <!-- Graphic sub-carousel (clothing only) -->
-        <div v-if="cat.typeKey === 'clothing' && options.clothing === 'graphicShirt'" class="carousel">
-          <button type="button" class="carousel-btn" @click="cycle('clothingGraphic', CLOTHING_GRAPHIC_OPTIONS, -1)">‹</button>
-          <span class="carousel-value carousel-value-sm">{{ formatLabel(options.clothingGraphic) }}</span>
-          <button type="button" class="carousel-btn" @click="cycle('clothingGraphic', CLOTHING_GRAPHIC_OPTIONS, 1)">›</button>
-        </div>
+          <!-- Graphic sub-carousel (clothing only) -->
+          <div v-if="cat.typeKey === 'clothing' && options.clothing === 'graphicShirt'" class="carousel">
+            <button type="button" class="carousel-btn" @click="cycle('clothingGraphic', CLOTHING_GRAPHIC_OPTIONS, -1)">‹</button>
+            <span class="carousel-value carousel-value-sm">{{ formatLabel(options.clothingGraphic) }}</span>
+            <button type="button" class="carousel-btn" @click="cycle('clothingGraphic', CLOTHING_GRAPHIC_OPTIONS, 1)">›</button>
+          </div>
 
-        <!-- Color swatches -->
-        <div v-if="cat.colorList && showColors(cat)" class="swatch-row">
-          <button
-            v-for="color in cat.colorList"
-            :key="color"
-            type="button"
-            class="swatch"
-            :class="{ active: isActiveColor(cat.colorKey, color) }"
-            :style="swatchBg(color)"
-            @click="setOption(cat.colorKey, color)"
-          />
+          <!-- Color swatches -->
+          <div v-if="cat.colorList && showColors(cat)" class="swatch-row">
+            <button
+              v-for="color in cat.colorList"
+              :key="color"
+              type="button"
+              class="swatch"
+              :class="{ active: isActiveColor(cat.colorKey, color) }"
+              :style="swatchBg(color)"
+              @click="setOption(cat.colorKey, color)"
+            />
+          </div>
+
+          <!-- Hat color swatches (hair section only, when a hat is selected) -->
+          <template v-if="cat.typeKey === 'top' && isHatSelected">
+            <span class="card-label">Hat colour</span>
+            <div class="swatch-row">
+              <button
+                v-for="color in HAT_COLORS"
+                :key="color"
+                type="button"
+                class="swatch"
+                :class="{ active: isActiveColor('hatColor', color) }"
+                :style="swatchBg(color)"
+                @click="setOption('hatColor', color)"
+              />
+            </div>
+          </template>
         </div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { createAvatar, type Options } from '@dicebear/core'
 import * as avataaars from '@dicebear/avataaars'
 import {
@@ -53,6 +78,7 @@ const props = defineProps<{ modelValue: string }>()
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 
 const options = reactive<AvatarOptions>({ ...parseAvatarString(props.modelValue) })
+const activeCatIndex = ref(0)
 
 watch(
   () => props.modelValue,
@@ -108,6 +134,7 @@ const previewSvg = computed(() => {
     style: ['circle'],
     top: [options.top],
     hairColor: [options.hairColor],
+    hatColor: [options.hatColor],
     accessories: options.accessories ? [options.accessories] : [],
     accessoriesProbability: options.accessories ? 100 : 0,
     accessoriesColor: [options.accessoriesColor],
@@ -143,7 +170,7 @@ function swatchBg(color: string): Record<string, string> {
 
 // ── Option lists ──────────────────────────────────────────────────────────────
 
-const TOP_OPTIONS = [
+const HAIR_OPTIONS: (string | null)[] = [
   'bigHair','bob','bun','curly','curvy','dreads','dreads01','dreads02',
   'frida','fro','froBand','frizzle','hat','hijab','longButNotTooLong',
   'miaWallace','shaggy','shaggyMullet','shavedSides','shortCurly','shortFlat',
@@ -190,20 +217,24 @@ const HAIR_COLORS    = ['2c1b18','4a312c','724133','a55728','b58143','c93305','d
 const ACCESSORIES_COLORS = ['262e33','3c4f5c','25557c','5199e4','65c9ff','929598','b1e2ff','e6e6e6','ff488e','ff5c5c','ffafb9','ffdeb5','ffffb1','ffffff']
 const CLOTHES_COLORS = ['262e33','3c4f5c','25557c','5199e4','65c9ff','929598','a7ffc4','b1e2ff','e6e6e6','ff488e','ff5c5c','ffafb9','ffffb1','ffffff']
 const FACIAL_HAIR_COLORS = ['2c1b18','4a312c','724133','a55728','b58143','c93305','d6b370','e8e1e1','ecdcbf','f59797']
+const HAT_COLORS     = ['262e33','3c4f5c','25557c','5199e4','65c9ff','929598','a7ffc4','b1e2ff','e6e6e6','ff488e','ff5c5c','ffafb9','ffffb1','ffffff']
 const BG_COLORS      = ['transparent','b6e3f4','c0aede','d1d4f9','ffd5dc','ffeba4','a3d977','65c9ff','ff9a00','e8e1e1']
+
+const HAT_TOPS = new Set(['hat','hijab','turban','winterHat02','winterHat03','winterHat04','winterHat1'])
+const isHatSelected = computed(() => HAT_TOPS.has(options.top))
 
 // ── Categories ────────────────────────────────────────────────────────────────
 
 const categories: CategoryDef[] = [
-  { label: 'Skin',        typeKey: null,           typeList: null,                              colorKey: 'skinColor',        colorList: SKIN_COLORS,        hideColorWhenNull: false },
   { label: 'Background',  typeKey: null,           typeList: null,                              colorKey: 'backgroundColor', colorList: BG_COLORS,           hideColorWhenNull: false },
-  { label: 'Hair',        typeKey: 'top',          typeList: TOP_OPTIONS,                       colorKey: 'hairColor',        colorList: HAIR_COLORS,        hideColorWhenNull: false },
+  { label: 'Skin',        typeKey: null,           typeList: null,                              colorKey: 'skinColor',        colorList: SKIN_COLORS,        hideColorWhenNull: false },
+  { label: 'Hair',        typeKey: 'top',          typeList: HAIR_OPTIONS,                      colorKey: 'hairColor',        colorList: HAIR_COLORS,        hideColorWhenNull: false },
   { label: 'Clothing',    typeKey: 'clothing',     typeList: CLOTHING_OPTIONS,                  colorKey: 'clothesColor',     colorList: CLOTHES_COLORS,      hideColorWhenNull: false },
-  { label: 'Glasses',     typeKey: 'accessories',  typeList: [null, ...ACCESSORIES_OPTIONS],    colorKey: 'accessoriesColor', colorList: ACCESSORIES_COLORS,  hideColorWhenNull: true },
-  { label: 'Facial hair', typeKey: 'facialHair',   typeList: [null, ...FACIAL_HAIR_OPTIONS],    colorKey: 'facialHairColor',  colorList: FACIAL_HAIR_COLORS,  hideColorWhenNull: true },
   { label: 'Eyes',        typeKey: 'eyes',         typeList: EYES_OPTIONS,                      colorKey: null,               colorList: null,               hideColorWhenNull: false },
   { label: 'Brows',       typeKey: 'eyebrows',     typeList: EYEBROWS_OPTIONS,                  colorKey: null,               colorList: null,               hideColorWhenNull: false },
   { label: 'Mouth',       typeKey: 'mouth',        typeList: MOUTH_OPTIONS,                     colorKey: null,               colorList: null,               hideColorWhenNull: false },
+  { label: 'Facial hair', typeKey: 'facialHair',   typeList: [null, ...FACIAL_HAIR_OPTIONS],    colorKey: 'facialHairColor',  colorList: FACIAL_HAIR_COLORS,  hideColorWhenNull: true },
+  { label: 'Glasses',     typeKey: 'accessories',  typeList: [null, ...ACCESSORIES_OPTIONS],    colorKey: 'accessoriesColor', colorList: ACCESSORIES_COLORS,  hideColorWhenNull: true },
 ]
 </script>
 
@@ -225,6 +256,38 @@ const categories: CategoryDef[] = [
   background: #f3f4f6;
 }
 
+/* ── Category navigation (mobile) ──────────────────────────────────────────── */
+
+.category-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.nav-btn {
+  font-size: 1.2rem;
+  font-weight: 700;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+@media (min-width: 481px) {
+  .category-nav {
+    display: none;
+  }
+}
+
 /* ── Category grid ─────────────────────────────────────────────────────────── */
 
 .category-grid {
@@ -241,6 +304,24 @@ const categories: CategoryDef[] = [
   border-radius: 0.5rem;
   background: rgba(255, 255, 255, 0.5);
   align-content: start;
+}
+
+.desktop-only {
+  display: block;
+}
+
+@media (max-width: 480px) {
+  .category-grid {
+    display: block;
+  }
+
+  .mobile-hidden {
+    display: none;
+  }
+
+  .desktop-only {
+    display: none;
+  }
 }
 
 .card-label {
@@ -329,10 +410,6 @@ const categories: CategoryDef[] = [
     width: 2.5rem;
     height: 2.5rem;
     font-size: 1.2rem;
-  }
-
-  .carousel-value {
-    display: none;
   }
 
   .carousel {

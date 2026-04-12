@@ -4,6 +4,7 @@ import * as avataaars from '@dicebear/avataaars'
 export interface AvatarOptions {
   top: string
   hairColor: string
+  hatColor: string
   accessories: string | null
   accessoriesColor: string
   clothing: string
@@ -35,6 +36,7 @@ const HAIR_COLORS = ['2c1b18','4a312c','724133','a55728','b58143','c93305','d6b3
 const ACCESSORIES_COLORS = ['262e33','3c4f5c','25557c','5199e4','65c9ff','929598','b1e2ff','e6e6e6','ff488e','ff5c5c','ffafb9','ffdeb5','ffffb1','ffffff']
 const CLOTHES_COLORS = ['262e33','3c4f5c','25557c','5199e4','65c9ff','929598','a7ffc4','b1e2ff','e6e6e6','ff488e','ff5c5c','ffafb9','ffffb1','ffffff']
 const FACIAL_HAIR_COLORS = ['2c1b18','4a312c','724133','a55728','b58143','c93305','d6b370','e8e1e1','ecdcbf','f59797']
+const HAT_COLORS = ['262e33','3c4f5c','25557c','5199e4','65c9ff','929598','a7ffc4','b1e2ff','e6e6e6','ff488e','ff5c5c','ffafb9','ffffb1','ffffff']
 const BG_COLORS = ['transparent','b6e3f4','c0aede','d1d4f9','ffd5dc','ffeba4','a3d977','65c9ff','ff9a00','e8e1e1']
 
 export function randomizeAvatarOptions(): AvatarOptions {
@@ -43,6 +45,7 @@ export function randomizeAvatarOptions(): AvatarOptions {
   return {
     top: pick(TOP_OPTIONS),
     hairColor: pick(HAIR_COLORS),
+    hatColor: pick(HAT_COLORS),
     accessories: hasAccessory ? pick(ACCESSORIES_OPTIONS) : null,
     accessoriesColor: pick(ACCESSORIES_COLORS),
     clothing: pick(CLOTHING_OPTIONS),
@@ -61,6 +64,7 @@ export function randomizeAvatarOptions(): AvatarOptions {
 export const DEFAULT_AVATAR_OPTIONS: AvatarOptions = {
   top: 'shortFlat',
   hairColor: 'd6b370',
+  hatColor: '262e33',
   accessories: null,
   accessoriesColor: '929598',
   clothing: 'hoodie',
@@ -101,6 +105,7 @@ export function buildAvatarSvg(avatarStr: string): string {
         style: ['circle'],
         top: [o.top],
         hairColor: [o.hairColor],
+        hatColor: [o.hatColor],
         accessories: o.accessories ? [o.accessories] : [],
         accessoriesProbability: o.accessories ? 100 : 0,
         accessoriesColor: [o.accessoriesColor],

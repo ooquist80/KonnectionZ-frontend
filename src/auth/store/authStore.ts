@@ -2,6 +2,7 @@ import { computed, ref } from 'vue'
 import type { UserRead, UserWrite } from '../../shared/types/api'
 import { clearStoredToken, getStoredToken, setStoredToken } from '../../shared/auth/tokenStorage'
 import { getMe, login, updateAvatar, updateMe } from '../../shared/api/authApi'
+import { getApiErrorMessage } from '../../shared/api/http'
 
 const token = ref<string | null>(getStoredToken())
 const user = ref<UserRead | null>(null)
@@ -33,7 +34,7 @@ export function useAuthStore() {
       clearStoredToken()
       token.value = null
       user.value = null
-      errorMessage.value = error instanceof Error ? error.message : 'Unable to sign in'
+      errorMessage.value = getApiErrorMessage(error) ?? 'Unable to sign in'
       throw error
     } finally {
       isLoading.value = false
@@ -59,7 +60,7 @@ export function useAuthStore() {
       await loadCurrentUser()
     } catch (error) {
       logout()
-      errorMessage.value = error instanceof Error ? error.message : 'Session restore failed'
+      errorMessage.value = getApiErrorMessage(error) ?? 'Session restore failed'
       throw error
     } finally {
       isLoading.value = false

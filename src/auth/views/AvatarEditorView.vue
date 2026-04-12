@@ -2,14 +2,15 @@
   <section class="avatar-editor-view">
     <div class="view-header">
       <h1>Edit avatar</h1>
-      <div class="top-right-actions">
-        <RouterLink to="/account" class="back-link">← Account</RouterLink>
-        <button type="button" class="randomize-btn" @click="randomize">🎲 <span class="randomize-label">Randomise</span></button>
-      </div>
+      <RouterLink to="/account" class="back-link">← Account</RouterLink>
     </div>
 
     <div v-if="avatarSuccess" class="success-banner">{{ avatarSuccess }}</div>
     <div v-if="avatarError" class="error-banner">{{ avatarError }}</div>
+
+    <div class="editor-toolbar">
+      <button type="button" class="randomize-btn" @click="randomize">🎲 <span class="randomize-label">Randomise</span></button>
+    </div>
 
     <AvatarEditor v-model="pendingAvatarStr" />
 
@@ -76,6 +77,24 @@ async function onSaveAvatar() {
   gap: 0.25rem;
 }
 
+.back-link {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #111827;
+}
+
+.editor-toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .randomize-btn {
   background: transparent;
   border: 1px solid #d1d5db;
@@ -86,16 +105,6 @@ async function onSaveAvatar() {
   cursor: pointer;
   color: #374151;
   white-space: nowrap;
-}
-
-.top-right-actions {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.35rem;
 }
 
 .randomize-btn:hover {
@@ -114,16 +123,6 @@ async function onSaveAvatar() {
   .btn-primary {
     width: 100%;
   }
-}
-
-.back-link {
-  font-size: 0.9rem;
-  color: #6b7280;
-  text-decoration: none;
-}
-
-.back-link:hover {
-  color: #111827;
 }
 
 .view-header h1 {
