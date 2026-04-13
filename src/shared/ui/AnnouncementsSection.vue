@@ -8,58 +8,60 @@
 
     <ul v-else class="announcements-list">
       <li v-for="item in items" :key="item.id" class="announcement-item">
-        <img
-          v-if="item.avatarSrc"
-          :src="item.avatarSrc"
-          alt="User avatar"
-          class="announcement-avatar"
-        />
-        <div v-else class="announcement-avatar announcement-avatar--placeholder" />
+        <div class="announcement-top">
+          <img
+            v-if="item.avatarSrc"
+            :src="item.avatarSrc"
+            alt="User avatar"
+            class="announcement-avatar"
+          />
+          <div v-else class="announcement-avatar announcement-avatar--placeholder" />
 
-        <div class="announcement-body">
-          <p class="announcement-content">{{ item.content }}</p>
-          <time class="announcement-time" :datetime="item.announced_at">
-            {{ formatDate(item.announced_at) }}
-          </time>
+          <div class="announcement-body">
+            <p class="announcement-content">{{ item.content }}</p>
+            <time class="announcement-time" :datetime="item.announced_at">
+              {{ formatDate(item.announced_at) }}
+            </time>
 
-          <button
-            type="button"
-            class="comments-toggle"
-            @click="toggleComments(item.id)"
-          >
-            {{ expandedId === item.id ? 'Hide comments' : 'Comments' }}
-            <span v-if="commentCounts.get(item.id)" class="comment-count">({{ commentCounts.get(item.id) }})</span>
-          </button>
-
-          <!-- Comments section -->
-          <div v-if="expandedId === item.id" class="comments-section">
-            <p v-if="commentsLoading" class="comments-status">Loading comments...</p>
-            <p v-else-if="commentsError" class="comments-status comments-error">{{ commentsError }}</p>
-            <template v-else>
-              <p v-if="comments.length === 0" class="comments-status">No comments yet.</p>
-              <ul v-else class="comments-list">
-                <li v-for="c in comments" :key="c.id" class="comment-item">
-                  <strong class="comment-user">{{ c.user_name }}</strong>
-                  <p class="comment-content">{{ c.content }}</p>
-                  <time class="comment-time" :datetime="c.commented_at">{{ formatDate(c.commented_at) }}</time>
-                </li>
-              </ul>
-            </template>
-
-            <form v-if="auth.isAuthenticated.value" class="comment-form" @submit.prevent="submitComment(item.id)">
-              <input
-                v-model="newComment"
-                type="text"
-                placeholder="Write a comment..."
-                class="comment-input"
-                required
-                :disabled="commentSubmitting"
-              />
-              <button type="submit" class="comment-submit" :disabled="commentSubmitting || !newComment.trim()">
-                {{ commentSubmitting ? '...' : 'Send' }}
-              </button>
-            </form>
+            <button
+              type="button"
+              class="comments-toggle"
+              @click="toggleComments(item.id)"
+            >
+              {{ expandedId === item.id ? 'Hide comments' : 'Comments' }}
+              <span v-if="commentCounts.get(item.id)" class="comment-count">({{ commentCounts.get(item.id) }})</span>
+            </button>
           </div>
+        </div>
+
+        <!-- Comments section (full width, below avatar row) -->
+        <div v-if="expandedId === item.id" class="comments-section">
+          <p v-if="commentsLoading" class="comments-status">Loading comments...</p>
+          <p v-else-if="commentsError" class="comments-status comments-error">{{ commentsError }}</p>
+          <template v-else>
+            <p v-if="comments.length === 0" class="comments-status">No comments yet.</p>
+            <ul v-else class="comments-list">
+              <li v-for="c in comments" :key="c.id" class="comment-item">
+                <strong class="comment-user">{{ c.user_name }}</strong>
+                <p class="comment-content">{{ c.content }}</p>
+                <time class="comment-time" :datetime="c.commented_at">{{ formatDate(c.commented_at) }}</time>
+              </li>
+            </ul>
+          </template>
+
+          <form v-if="auth.isAuthenticated.value" class="comment-form" @submit.prevent="submitComment(item.id)">
+            <input
+              v-model="newComment"
+              type="text"
+              placeholder="Write a comment..."
+              class="comment-input"
+              required
+              :disabled="commentSubmitting"
+            />
+            <button type="submit" class="comment-submit" :disabled="commentSubmitting || !newComment.trim()">
+              {{ commentSubmitting ? '...' : 'Send' }}
+            </button>
+          </form>
         </div>
       </li>
     </ul>
@@ -218,15 +220,20 @@ function formatDate(iso: string): string {
 }
 
 .announcement-item {
-  display: flex;
-  gap: 0.75rem;
-  align-items: flex-start;
+  display: grid;
+  gap: 0;
   padding: 0.9rem 1rem;
   border: 1px solid var(--kz-border);
   border-radius: 0.6rem;
   background: var(--kz-surface);
   min-width: 0;
   overflow: hidden;
+}
+
+.announcement-top {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
 }
 
 .announcement-avatar {
@@ -282,7 +289,7 @@ function formatDate(iso: string): string {
 .comments-section {
   display: grid;
   gap: 0.4rem;
-  margin-top: 0.35rem;
+  margin-top: 0.5rem;
   padding-top: 0.5rem;
   border-top: 1px solid var(--kz-border);
   min-width: 0;
