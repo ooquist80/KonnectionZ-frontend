@@ -4,16 +4,16 @@
 
     <!-- Create gameset form -->
     <details class="create-section" @toggle="onFormToggle">
-      <summary>Create new gameset</summary>
+      <summary>{{ $t('admin.gamesets.createTitle') }}</summary>
       <form class="create-form" @submit.prevent="onCreateGameset">
-        <label for="gs-name">Name</label>
+        <label for="gs-name">{{ $t('admin.gamesets.name') }}</label>
         <input id="gs-name" v-model="form.name" required placeholder="e.g. Daily 2026-04-03" />
 
-        <label for="gs-daily-date">Daily date <span class="muted">(optional)</span></label>
+        <label for="gs-daily-date">{{ $t('admin.gamesets.dailyDate') }} <span class="muted">{{ $t('admin.gamesets.dailyDateOptional') }}</span></label>
         <input id="gs-daily-date" type="date" v-model="form.dailyDate" />
 
-        <label>Select 4 wordsets</label>
-        <p v-if="wordsetsLoading" class="muted">Loading wordsets...</p>
+        <label>{{ $t('admin.gamesets.selectWordsets') }}</label>
+        <p v-if="wordsetsLoading" class="muted">{{ $t('admin.gamesets.loadingWordsets') }}</p>
         <div v-else-if="availableWordsets.length" class="wordset-picker">
           <label
             v-for="ws in availableWordsets"
@@ -27,21 +27,21 @@
               @change="toggleWordset(ws.id)"
             />
             <strong>{{ ws.category }}</strong>
-            <span class="muted">Difficulty {{ ws.difficulty }} · {{ ws.words.map((w) => w.word).join(', ') }}</span>
+            <span class="muted">{{ $t('admin.wordsets.difficulty') }} {{ ws.difficulty }} · {{ ws.words.map((w) => w.word).join(', ') }}</span>
           </label>
         </div>
-        <p v-else class="muted">No wordsets available. Create wordsets first.</p>
+        <p v-else class="muted">{{ $t('admin.gamesets.noWordsets') }}</p>
 
         <button type="submit" :disabled="isLoading || form.wordsetIds.size !== 4">
-          {{ isLoading ? 'Creating...' : `Create gameset (${form.wordsetIds.size}/4 selected)` }}
+          {{ isLoading ? $t('admin.gamesets.creating') : $t('admin.gamesets.createGameset', { count: form.wordsetIds.size }) }}
         </button>
       </form>
     </details>
 
     <!-- Existing gamesets -->
-    <h3>Existing gamesets</h3>
-    <p v-if="isLoading && !gamesets.length" class="muted">Loading gamesets...</p>
-    <p v-else-if="!gamesets.length" class="muted">No gamesets found.</p>
+    <h3>{{ $t('admin.gamesets.existingTitle') }}</h3>
+    <p v-if="isLoading && !gamesets.length" class="muted">{{ $t('admin.gamesets.loadingGamesets') }}</p>
+    <p v-else-if="!gamesets.length" class="muted">{{ $t('admin.gamesets.noGamesets') }}</p>
 
     <div v-else class="gameset-list">
       <div v-for="gs in gamesets" :key="gs.id" class="gameset-card">
@@ -61,12 +61,14 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { GameSetRead, WordsetRead } from '../../shared/types/api'
 import { listGamesets, createGameset } from '../../shared/api/adminApi'
 import { listWordsets } from '../../shared/api/adminApi'
 import { useAuthStore } from '../../auth/store/authStore'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
 
+const { t } = useI18n()
 const auth = useAuthStore()
 const gamesets = ref<GameSetRead[]>([])
 const availableWordsets = ref<WordsetRead[]>([])
@@ -94,7 +96,7 @@ async function loadGamesets() {
   try {
     gamesets.value = await listGamesets(token())
   } catch (e) {
-    errorMessage.value = e instanceof Error ? e.message : 'Failed to load gamesets'
+    errorMessage.value = e instanceof Error ? e.message : t('admin.gamesets.loadFailed')
   } finally {
     isLoading.value = false
   }
@@ -106,7 +108,7 @@ async function loadWordsets() {
   try {
     availableWordsets.value = await listWordsets(token())
   } catch (e) {
-    errorMessage.value = e instanceof Error ? e.message : 'Failed to load wordsets'
+    errorMessage.value = e instanceof Error ? e.message : t('admin.gamesets.wordsetLoadFailed')
   } finally {
     wordsetsLoading.value = false
   }
@@ -134,7 +136,7 @@ async function onCreateGameset() {
     form.wordsetIds.clear()
     await loadGamesets()
   } catch (e) {
-    errorMessage.value = e instanceof Error ? e.message : 'Failed to create gameset'
+    errorMessage.value = e instanceof Error ? e.message : t('admin.gamesets.createFailed')
   } finally {
     isLoading.value = false
   }

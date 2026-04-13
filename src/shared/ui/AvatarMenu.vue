@@ -1,21 +1,21 @@
 <template>
   <div class="avatar-menu" ref="containerRef">
     <button type="button" class="avatar-btn" @click="toggleMenu" :aria-expanded="open">
-      <img :src="avatarSrc" alt="Your avatar" class="avatar-img" />
+      <img :src="avatarSrc" :alt="$t('shared.avatarMenu.avatarAlt')" class="avatar-img" />
     </button>
 
     <Transition name="dropdown">
       <div v-if="open" class="dropdown" role="menu">
         <RouterLink to="/" class="dropdown-item" @click="close">
-          Main menu
+          {{ $t('shared.avatarMenu.mainMenu') }}
         </RouterLink>
         <hr class="dropdown-divider" />
         <RouterLink to="/account" class="dropdown-item" @click="close">
-          Account settings
+          {{ $t('shared.avatarMenu.accountSettings') }}
         </RouterLink>
         <hr class="dropdown-divider" />
         <button type="button" class="dropdown-item dropdown-item--danger" @click="onSignOut">
-          Sign out
+          {{ $t('shared.avatarMenu.signOut') }}
         </button>
       </div>
     </Transition>

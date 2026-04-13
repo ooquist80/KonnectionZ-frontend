@@ -8,7 +8,7 @@
     </div>
 
     <div class="preview-area">
-      <img :src="previewSvg" alt="Avatar preview" class="avatar-preview-lg" />
+      <img :src="previewSvg" :alt="$t('avatar.preview')" class="avatar-preview-lg" />
     </div>
 
     <div class="category-grid">
@@ -45,7 +45,7 @@
 
           <!-- Hat color swatches (hair section only, when a hat is selected) -->
           <template v-if="cat.typeKey === 'top' && isHatSelected">
-            <span class="card-label">Hat colour</span>
+            <span class="card-label">{{ $t('avatar.hatColour') }}</span>
             <div class="swatch-row">
               <button
                 v-for="color in HAT_COLORS"
@@ -66,6 +66,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { createAvatar, type Options } from '@dicebear/core'
 import * as avataaars from '@dicebear/avataaars'
 import {
@@ -74,6 +75,7 @@ import {
   serializeAvatarOptions,
 } from '../../shared/utils/avatarUtils'
 
+const { t } = useI18n()
 const props = defineProps<{ modelValue: string }>()
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 
@@ -113,7 +115,7 @@ interface CategoryDef {
 function typeLabel(cat: CategoryDef): string {
   if (!cat.typeKey) return ''
   const val = options[cat.typeKey]
-  if (val === null) return 'None'
+  if (val === null) return t('common.none')
   return formatLabel(val as string)
 }
 
@@ -225,17 +227,17 @@ const isHatSelected = computed(() => HAT_TOPS.has(options.top))
 
 // ── Categories ────────────────────────────────────────────────────────────────
 
-const categories: CategoryDef[] = [
-  { label: 'Background',  typeKey: null,           typeList: null,                              colorKey: 'backgroundColor', colorList: BG_COLORS,           hideColorWhenNull: false },
-  { label: 'Skin',        typeKey: null,           typeList: null,                              colorKey: 'skinColor',        colorList: SKIN_COLORS,        hideColorWhenNull: false },
-  { label: 'Hair',        typeKey: 'top',          typeList: HAIR_OPTIONS,                      colorKey: 'hairColor',        colorList: HAIR_COLORS,        hideColorWhenNull: false },
-  { label: 'Clothing',    typeKey: 'clothing',     typeList: CLOTHING_OPTIONS,                  colorKey: 'clothesColor',     colorList: CLOTHES_COLORS,      hideColorWhenNull: false },
-  { label: 'Eyes',        typeKey: 'eyes',         typeList: EYES_OPTIONS,                      colorKey: null,               colorList: null,               hideColorWhenNull: false },
-  { label: 'Brows',       typeKey: 'eyebrows',     typeList: EYEBROWS_OPTIONS,                  colorKey: null,               colorList: null,               hideColorWhenNull: false },
-  { label: 'Mouth',       typeKey: 'mouth',        typeList: MOUTH_OPTIONS,                     colorKey: null,               colorList: null,               hideColorWhenNull: false },
-  { label: 'Facial hair', typeKey: 'facialHair',   typeList: [null, ...FACIAL_HAIR_OPTIONS],    colorKey: 'facialHairColor',  colorList: FACIAL_HAIR_COLORS,  hideColorWhenNull: true },
-  { label: 'Glasses',     typeKey: 'accessories',  typeList: [null, ...ACCESSORIES_OPTIONS],    colorKey: 'accessoriesColor', colorList: ACCESSORIES_COLORS,  hideColorWhenNull: true },
-]
+const categories = computed<CategoryDef[]>(() => [
+  { label: t('avatar.categories.background'),  typeKey: null,           typeList: null,                              colorKey: 'backgroundColor', colorList: BG_COLORS,           hideColorWhenNull: false },
+  { label: t('avatar.categories.skin'),        typeKey: null,           typeList: null,                              colorKey: 'skinColor',        colorList: SKIN_COLORS,        hideColorWhenNull: false },
+  { label: t('avatar.categories.hair'),        typeKey: 'top',          typeList: HAIR_OPTIONS,                      colorKey: 'hairColor',        colorList: HAIR_COLORS,        hideColorWhenNull: false },
+  { label: t('avatar.categories.clothing'),    typeKey: 'clothing',     typeList: CLOTHING_OPTIONS,                  colorKey: 'clothesColor',     colorList: CLOTHES_COLORS,      hideColorWhenNull: false },
+  { label: t('avatar.categories.eyes'),        typeKey: 'eyes',         typeList: EYES_OPTIONS,                      colorKey: null,               colorList: null,               hideColorWhenNull: false },
+  { label: t('avatar.categories.brows'),       typeKey: 'eyebrows',     typeList: EYEBROWS_OPTIONS,                  colorKey: null,               colorList: null,               hideColorWhenNull: false },
+  { label: t('avatar.categories.mouth'),       typeKey: 'mouth',        typeList: MOUTH_OPTIONS,                     colorKey: null,               colorList: null,               hideColorWhenNull: false },
+  { label: t('avatar.categories.facialHair'),   typeKey: 'facialHair',   typeList: [null, ...FACIAL_HAIR_OPTIONS],    colorKey: 'facialHairColor',  colorList: FACIAL_HAIR_COLORS,  hideColorWhenNull: true },
+  { label: t('avatar.categories.glasses'),     typeKey: 'accessories',  typeList: [null, ...ACCESSORIES_OPTIONS],    colorKey: 'accessoriesColor', colorList: ACCESSORIES_COLORS,  hideColorWhenNull: true },
+])
 </script>
 
 <style scoped>

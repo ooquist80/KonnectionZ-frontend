@@ -1,12 +1,12 @@
 <template>
   <section class="game-select-view">
-    <RouterLink to="/" class="back-link">← Back</RouterLink>
-    <h1>Select a game</h1>
+    <RouterLink to="/" class="back-link">{{ $t('common.back') }}</RouterLink>
+    <h1>{{ $t('game.select.title') }}</h1>
 
     <ApiErrorBanner :message="game.errorMessage.value" />
 
     <div class="header-actions">
-      <p>Select any available game to start playing.</p>
+      <p>{{ $t('game.select.description') }}</p>
     </div>
 
     <div v-if="game.gameSets.value.length" class="gameset-list">
@@ -24,7 +24,7 @@
     </div>
 
     <p v-else-if="!game.isLoading.value" class="empty-state">
-      No games are available right now.
+      {{ $t('game.select.noGames') }}
     </p>
 
   </section>
@@ -33,10 +33,12 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
 import { useGameStore } from '../store/gameStore'
 import type { PlayGameSet } from '../../shared/types/api'
 
+const { t } = useI18n()
 const game = useGameStore()
 const router = useRouter()
 
@@ -57,9 +59,9 @@ function openGame(gamesetId: number) {
 }
 
 function gameStatusLabel(set: PlayGameSet): string {
-  if (set.end_time) return 'Completed'
-  if (set.start_time) return 'In progress'
-  return 'Not played'
+  if (set.end_time) return t('game.select.completed')
+  if (set.start_time) return t('game.select.inProgress')
+  return t('game.select.notPlayed')
 }
 
 function gameStatusClass(set: PlayGameSet): string {

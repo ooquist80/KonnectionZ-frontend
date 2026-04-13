@@ -1,0 +1,242 @@
+{
+  "common": {
+    "back": "← Tillbaka",
+    "cancel": "Avbryt",
+    "save": "Spara",
+    "saving": "Sparar...",
+    "loading": "Laddar...",
+    "edit": "Redigera",
+    "delete": "Radera",
+    "send": "Skicka",
+    "none": "Ingen",
+    "createAccount": "Skapa ett konto",
+    "or": "eller"
+  },
+  "auth": {
+    "login": {
+      "title": "Logga in på ditt konto",
+      "username": "Användarnamn",
+      "password": "Lösenord",
+      "submit": "Logga in",
+      "submitting": "Loggar in...",
+      "noAccount": "Har du inget konto?",
+      "register": "Registrera dig"
+    },
+    "register": {
+      "title": "Skapa ett konto",
+      "email": "E-post",
+      "username": "Användarnamn",
+      "password": "Lösenord",
+      "confirmPassword": "Bekräfta lösenord",
+      "passwordMismatch": "Lösenorden matchar inte.",
+      "submitting": "Skapar konto…",
+      "next": "Nästa →",
+      "hasAccount": "Har du redan ett konto?",
+      "logIn": "Logga in",
+      "avatarTitle": "Skapa din avatar",
+      "avatarSubtitle": "Anpassa hur du ser ut för andra spelare. Du kan ändra detta senare.",
+      "randomise": "Slumpa",
+      "skipForNow": "Hoppa över",
+      "saveAndContinue": "Spara & fortsätt",
+      "genericError": "Något gick fel. Försök igen."
+    },
+    "account": {
+      "backLink": "← Tillbaka",
+      "title": "Användarkonto",
+      "subtitle": "Hantera dina kontouppgifter.",
+      "avatarAlt": "Din avatar",
+      "userId": "Användar-ID",
+      "username": "Användarnamn",
+      "email": "E-post",
+      "scopes": "Behörigheter",
+      "noScopes": "Inga behörigheter tilldelade",
+      "editAccount": "Redigera konto",
+      "editAvatar": "Redigera avatar",
+      "editTitle": "Redigera konto",
+      "changePassword": "Byt lösenord",
+      "newPassword": "Nytt lösenord",
+      "confirmNewPassword": "Bekräfta nytt lösenord",
+      "saveChanges": "Spara ändringar",
+      "passwordMismatch": "Lösenorden matchar inte.",
+      "accountUpdated": "Kontot har uppdaterats.",
+      "accountUpdateFailed": "Kunde inte uppdatera kontot.",
+      "passwordChanged": "Lösenordet har ändrats.",
+      "passwordChangeFailed": "Kunde inte ändra lösenordet.",
+      "backgroundTheme": "Bakgrundstema",
+      "language": "Språk"
+    },
+    "avatarEditor": {
+      "title": "Redigera avatar",
+      "backLink": "← Konto",
+      "randomise": "Slumpa",
+      "saveAvatar": "Spara avatar",
+      "avatarSaved": "Avataren sparad!",
+      "saveFailed": "Kunde inte spara avataren."
+    }
+  },
+  "avatar": {
+    "preview": "Förhandsvisning av avatar",
+    "hatColour": "Hattfärg",
+    "categories": {
+      "background": "Bakgrund",
+      "skin": "Hud",
+      "hair": "Hår",
+      "clothing": "Kläder",
+      "eyes": "Ögon",
+      "brows": "Ögonbryn",
+      "mouth": "Mun",
+      "facialHair": "Skägg",
+      "glasses": "Glasögon"
+    }
+  },
+  "home": {
+    "title": "Huvudmeny",
+    "welcome": "Välkommen tillbaka, {username}.",
+    "dailyGame": "Dagens spel",
+    "completedBadge": "✓ Klart",
+    "inProgressBadge": "Pågår",
+    "selectGame": "Välj ett spel",
+    "browseGames": "Bläddra bland alla tillgängliga spel.",
+    "completedCount": "{completed} av {total} avklarade",
+    "userAccount": "Användarkonto",
+    "userAccountDesc": "Se dina inloggade kontouppgifter.",
+    "administration": "Administration",
+    "administrationDesc": "Hantera spelset, ordset och användare.",
+    "dailyNoMisses": "Klart utan fel!",
+    "dailyCompleted": "Klart · {count} fel",
+    "dailyInProgress": "Kom tillbaka och avsluta dagens pussel!",
+    "dailyNotStarted": "Hoppa rakt in i dagens pussel."
+  },
+  "game": {
+    "select": {
+      "title": "Välj ett spel",
+      "description": "Välj ett tillgängligt spel för att börja spela.",
+      "noGames": "Inga spel är tillgängliga just nu.",
+      "completed": "Klart",
+      "inProgress": "Pågår",
+      "notPlayed": "Ej spelat"
+    },
+    "play": {
+      "puzzle": "Pussel",
+      "loading": "Laddar pussel..."
+    },
+    "daily": {
+      "title": "Dagens pussel",
+      "loading": "Laddar dagens pussel..."
+    },
+    "board": {
+      "misses": "Fel: {count}",
+      "selected": "{count} av 4 valda",
+      "deselectAll": "Avmarkera alla",
+      "shuffle": "Blanda",
+      "submit": "Skicka",
+      "submitting": "Skickar...",
+      "toastAlmost": "Nästan",
+      "toastIncorrect": "Fel"
+    }
+  },
+  "admin": {
+    "title": "Administration",
+    "tabs": {
+      "gamesets": "Spelset",
+      "wordsets": "Ordset",
+      "users": "Användare"
+    },
+    "users": {
+      "createTitle": "Skapa ny användare",
+      "username": "Användarnamn",
+      "email": "E-post",
+      "password": "Lösenord",
+      "scopes": "Behörigheter",
+      "creating": "Skapar...",
+      "createUser": "Skapa användare",
+      "allUsers": "Alla användare",
+      "loadingUsers": "Laddar användare…",
+      "noUsers": "Inga användare hittades.",
+      "tableId": "ID",
+      "tableUsername": "Användarnamn",
+      "tableEmail": "E-post",
+      "tableScopes": "Behörigheter",
+      "confirmDelete": "Radera användare \"{username}\" (#{id})?",
+      "loadFailed": "Kunde inte ladda användare",
+      "createFailed": "Kunde inte skapa användare",
+      "deleteFailed": "Kunde inte radera användare"
+    },
+    "userEdit": {
+      "title": "Redigera användare",
+      "loading": "Laddar användare…",
+      "username": "Användarnamn",
+      "email": "E-post",
+      "scopes": "Behörigheter",
+      "changePassword": "Byt lösenord",
+      "newPassword": "Nytt lösenord",
+      "saveChanges": "Spara ändringar",
+      "loadFailed": "Kunde inte ladda användare",
+      "updateFailed": "Kunde inte uppdatera användare"
+    },
+    "wordsets": {
+      "createTitle": "Skapa nytt ordset",
+      "category": "Kategori",
+      "difficulty": "Svårighetsgrad (1–4)",
+      "words": "Ord (kommaseparerade, minst 4)",
+      "wordsEdit": "Ord (kommaseparerade)",
+      "creating": "Skapar...",
+      "createWordset": "Skapa ordset",
+      "existingTitle": "Befintliga ordset",
+      "loadingWordsets": "Laddar ordset...",
+      "noWordsets": "Inga ordset hittades.",
+      "minWords": "Ett ordset behöver minst 4 ord",
+      "loadFailed": "Kunde inte ladda ordset",
+      "createFailed": "Kunde inte skapa ordset",
+      "updateFailed": "Kunde inte uppdatera ordset",
+      "deleteFailed": "Kunde inte radera ordset"
+    },
+    "gamesets": {
+      "createTitle": "Skapa nytt spelset",
+      "name": "Namn",
+      "dailyDate": "Dagligt datum",
+      "dailyDateOptional": "(valfritt)",
+      "selectWordsets": "Välj 4 ordset",
+      "loadingWordsets": "Laddar ordset...",
+      "noWordsets": "Inga ordset tillgängliga. Skapa ordset först.",
+      "creating": "Skapar...",
+      "createGameset": "Skapa spelset ({count}/4 valda)",
+      "existingTitle": "Befintliga spelset",
+      "loadingGamesets": "Laddar spelset...",
+      "noGamesets": "Inga spelset hittades.",
+      "loadFailed": "Kunde inte ladda spelset",
+      "createFailed": "Kunde inte skapa spelset",
+      "wordsetLoadFailed": "Kunde inte ladda ordset"
+    }
+  },
+  "shared": {
+    "avatarMenu": {
+      "avatarAlt": "Din avatar",
+      "mainMenu": "Huvudmeny",
+      "accountSettings": "Kontoinställningar",
+      "signOut": "Logga ut"
+    },
+    "announcements": {
+      "title": "Meddelanden",
+      "loading": "Laddar...",
+      "noAnnouncements": "Inga meddelanden ännu.",
+      "hideComments": "Dölj kommentarer",
+      "comments": "Kommentarer",
+      "loadingComments": "Laddar kommentarer...",
+      "noComments": "Inga kommentarer ännu.",
+      "commentPlaceholder": "Skriv en kommentar...",
+      "loadCommentsFailed": "Kunde inte ladda kommentarer",
+      "postCommentFailed": "Kunde inte posta kommentar"
+    }
+  },
+  "themes": {
+    "ocean": "Hav",
+    "aurora": "Norrsken",
+    "sunset": "Solnedgång",
+    "forest": "Skog",
+    "ember": "Glöd",
+    "cosmos": "Kosmos",
+    "dark": "Mörk",
+    "light": "Ljus"
+  }
+}

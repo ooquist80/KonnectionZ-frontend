@@ -1,15 +1,15 @@
 <template>
   <section class="avatar-editor-view">
     <div class="view-header">
-      <h1>Edit avatar</h1>
-      <RouterLink to="/account" class="back-link">← Account</RouterLink>
+      <h1>{{ $t('auth.avatarEditor.title') }}</h1>
+      <RouterLink to="/account" class="back-link">{{ $t('auth.avatarEditor.backLink') }}</RouterLink>
     </div>
 
     <div v-if="avatarSuccess" class="success-banner">{{ avatarSuccess }}</div>
     <div v-if="avatarError" class="error-banner">{{ avatarError }}</div>
 
     <div class="editor-toolbar">
-      <button type="button" class="randomize-btn" @click="randomize">🎲 <span class="randomize-label">Randomise</span></button>
+      <button type="button" class="randomize-btn" @click="randomize">🎲 <span class="randomize-label">{{ $t('auth.avatarEditor.randomise') }}</span></button>
     </div>
 
     <AvatarEditor v-model="pendingAvatarStr" />
@@ -21,7 +21,7 @@
         :disabled="avatarLoading || pendingAvatarStr === auth.user.value?.avatar"
         @click="onSaveAvatar"
       >
-        {{ avatarLoading ? 'Saving...' : 'Save avatar' }}
+        {{ avatarLoading ? $t('common.saving') : $t('auth.avatarEditor.saveAvatar') }}
       </button>
     </div>
   </section>
@@ -30,10 +30,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../store/authStore'
 import { randomizeAvatarOptions, serializeAvatarOptions } from '../../shared/utils/avatarUtils'
 import AvatarEditor from '../components/AvatarEditor.vue'
 
+const { t } = useI18n()
 const auth = useAuthStore()
 
 const pendingAvatarStr = ref(auth.user.value?.avatar ?? '')
@@ -50,17 +52,17 @@ async function onSaveAvatar() {
   avatarLoading.value = true
   try {
     await auth.saveAvatar(pendingAvatarStr.value)
-    avatarSuccess.value = 'Avatar saved!'
+    avatarSuccess.value = t('auth.avatarEditor.avatarSaved')
   } catch (err: unknown) {
     if (err && typeof err === 'object' && 'payload' in err) {
       const payload = (err as { payload: unknown }).payload
       if (payload && typeof payload === 'object' && 'detail' in payload) {
         const detail = (payload as { detail: unknown }).detail
-        avatarError.value = typeof detail === 'string' ? detail : 'Failed to save avatar.'
+        avatarError.value = typeof detail === 'string' ? detail : t('auth.avatarEditor.saveFailed')
         return
       }
     }
-    avatarError.value = err instanceof Error ? err.message : 'Failed to save avatar.'
+    avatarError.value = err instanceof Error ? err.message : t('auth.avatarEditor.saveFailed')
   } finally {
     avatarLoading.value = false
   }

@@ -1,8 +1,8 @@
 <template>
   <section class="home-view">
     <div class="hero">
-      <h1>Main menu</h1>
-      <p v-if="auth.user.value">Welcome back, <strong>{{ auth.user.value.username }}</strong>.</p>
+      <h1>{{ $t('home.title') }}</h1>
+      <p v-if="auth.user.value">{{ $t('home.welcome', { username: auth.user.value.username }) }}</p>
     </div>
 
     <div class="menu-grid">
@@ -12,26 +12,26 @@
         :class="dailyCardClass"
       >
         <div class="card-title-row">
-          <strong>Daily Game</strong>
-          <span v-if="dailyStatus === 'completed'" class="daily-badge daily-badge--done">✓ Completed</span>
-          <span v-else-if="dailyStatus === 'in-progress'" class="daily-badge daily-badge--progress">In progress</span>
+          <strong>{{ $t('home.dailyGame') }}</strong>
+          <span v-if="dailyStatus === 'completed'" class="daily-badge daily-badge--done">{{ $t('home.completedBadge') }}</span>
+          <span v-else-if="dailyStatus === 'in-progress'" class="daily-badge daily-badge--progress">{{ $t('home.inProgressBadge') }}</span>
         </div>
         <span>{{ dailySubtitle }}</span>
       </RouterLink>
 
       <RouterLink to="/game" class="menu-card">
-        <strong>Select a game</strong>
+        <strong>{{ $t('home.selectGame') }}</strong>
         <span>{{ gameSelectSubtitle }}</span>
       </RouterLink>
 
       <RouterLink to="/account" class="menu-card">
-        <strong>User account</strong>
-        <span>View your signed-in account details.</span>
+        <strong>{{ $t('home.userAccount') }}</strong>
+        <span>{{ $t('home.userAccountDesc') }}</span>
       </RouterLink>
 
       <RouterLink v-if="isAdmin" to="/admin" class="menu-card menu-card-admin">
-        <strong>Administration</strong>
-        <span>Manage gamesets, wordsets and users.</span>
+        <strong>{{ $t('home.administration') }}</strong>
+        <span>{{ $t('home.administrationDesc') }}</span>
       </RouterLink>
     </div>
 
@@ -41,11 +41,13 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../../auth/store/authStore'
 import AnnouncementsSection from '../../shared/ui/AnnouncementsSection.vue'
 import { getDailyGameset, listGamesets } from '../../shared/api/playApi'
 import type { PlayGameSet } from '../../shared/types/api'
 
+const { t } = useI18n()
 const auth = useAuthStore()
 const isAdmin = computed(() => {
   const scopes = auth.user.value?.scopes ?? []
@@ -58,8 +60,8 @@ const gameSets = ref<PlayGameSet[]>([])
 const totalGames = computed(() => gameSets.value.length)
 const completedGames = computed(() => gameSets.value.filter((s) => s.end_time).length)
 const gameSelectSubtitle = computed(() => {
-  if (!totalGames.value) return 'Browse all available games.'
-  return `${completedGames.value} of ${totalGames.value} completed`
+  if (!totalGames.value) return t('home.browseGames')
+  return t('home.completedCount', { completed: completedGames.value, total: totalGames.value })
 })
 
 const dailyStatus = computed(() => {
@@ -77,10 +79,11 @@ const dailyCardClass = computed(() => ({
 const dailySubtitle = computed(() => {
   if (dailyStatus.value === 'completed') {
     const misses = dailyGame.value?.miss_count ?? 0
-    return misses === 0 ? 'Completed with no misses!' : `Completed · ${misses} miss${misses === 1 ? '' : 'es'}`
+    if (misses === 0) return t('home.dailyNoMisses')
+    return t('home.dailyCompleted', { count: misses }, misses)
   }
-  if (dailyStatus.value === 'in-progress') return 'Come back and finish today\'s puzzle!'
-  return 'Jump straight into today\'s puzzle.'
+  if (dailyStatus.value === 'in-progress') return t('home.dailyInProgress')
+  return t('home.dailyNotStarted')
 })
 
 onMounted(async () => {

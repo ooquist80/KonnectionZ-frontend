@@ -4,49 +4,49 @@
 
     <!-- Create wordset form -->
     <details class="create-section">
-      <summary>Create new wordset</summary>
+      <summary>{{ $t('admin.wordsets.createTitle') }}</summary>
       <form class="create-form" @submit.prevent="onCreateWordset">
-        <label for="ws-category">Category</label>
+        <label for="ws-category">{{ $t('admin.wordsets.category') }}</label>
         <input id="ws-category" v-model="form.category" required placeholder="e.g. Fruits" />
 
-        <label for="ws-difficulty">Difficulty (1–4)</label>
+        <label for="ws-difficulty">{{ $t('admin.wordsets.difficulty') }}</label>
         <input id="ws-difficulty" v-model.number="form.difficulty" type="number" min="1" max="4" required />
 
-        <label for="ws-words">Words (comma-separated, min 4)</label>
+        <label for="ws-words">{{ $t('admin.wordsets.words') }}</label>
         <input id="ws-words" v-model="form.wordsRaw" required placeholder="apple, banana, cherry, date" />
 
-        <button type="submit" :disabled="isLoading">{{ isLoading ? 'Creating...' : 'Create wordset' }}</button>
+        <button type="submit" :disabled="isLoading">{{ isLoading ? $t('admin.wordsets.creating') : $t('admin.wordsets.createWordset') }}</button>
       </form>
     </details>
 
     <!-- Existing wordsets -->
-    <h3>Existing wordsets</h3>
-    <p v-if="isLoading && !wordsets.length" class="muted">Loading wordsets...</p>
-    <p v-else-if="!wordsets.length" class="muted">No wordsets found.</p>
+    <h3>{{ $t('admin.wordsets.existingTitle') }}</h3>
+    <p v-if="isLoading && !wordsets.length" class="muted">{{ $t('admin.wordsets.loadingWordsets') }}</p>
+    <p v-else-if="!wordsets.length" class="muted">{{ $t('admin.wordsets.noWordsets') }}</p>
 
     <div v-else class="wordset-list">
       <div v-for="ws in wordsets" :key="ws.id" class="wordset-card">
         <div class="wordset-header">
           <strong>{{ ws.category }}</strong>
-          <span class="muted">Difficulty {{ ws.difficulty }} · ID #{{ ws.id }}</span>
+          <span class="muted">{{ $t('admin.wordsets.difficulty') }} {{ ws.difficulty }} · ID #{{ ws.id }}</span>
         </div>
         <p class="word-list">{{ ws.words.map((w) => w.word).join(', ') }}</p>
         <div class="card-actions">
-          <button type="button" @click="beginEdit(ws)">Edit</button>
-          <button type="button" class="btn-danger" :disabled="isLoading" @click="onDelete(ws.id)">Delete</button>
+          <button type="button" @click="beginEdit(ws)">{{ $t('common.edit') }}</button>
+          <button type="button" class="btn-danger" :disabled="isLoading" @click="onDelete(ws.id)">{{ $t('common.delete') }}</button>
         </div>
 
         <!-- Inline edit -->
         <form v-if="editingId === ws.id" class="edit-form" @submit.prevent="onSaveEdit">
-          <label>Category</label>
+          <label>{{ $t('admin.wordsets.category') }}</label>
           <input v-model="editForm.category" required />
-          <label>Difficulty (1–4)</label>
+          <label>{{ $t('admin.wordsets.difficulty') }}</label>
           <input v-model.number="editForm.difficulty" type="number" min="1" max="4" required />
-          <label>Words (comma-separated)</label>
+          <label>{{ $t('admin.wordsets.wordsEdit') }}</label>
           <input v-model="editForm.wordsRaw" required />
           <div class="card-actions">
-            <button type="submit" :disabled="isLoading">Save</button>
-            <button type="button" @click="editingId = null">Cancel</button>
+            <button type="submit" :disabled="isLoading">{{ $t('common.save') }}</button>
+            <button type="button" @click="editingId = null">{{ $t('common.cancel') }}</button>
           </div>
         </form>
       </div>
@@ -56,11 +56,13 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { WordsetRead } from '../../shared/types/api'
 import { listWordsets, createWordset, updateWordset, deleteWordset } from '../../shared/api/adminApi'
 import { useAuthStore } from '../../auth/store/authStore'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
 
+const { t } = useI18n()
 const auth = useAuthStore()
 const wordsets = ref<WordsetRead[]>([])
 const isLoading = ref(false)
@@ -85,7 +87,7 @@ async function loadWordsets() {
   try {
     wordsets.value = await listWordsets(token())
   } catch (e) {
-    errorMessage.value = e instanceof Error ? e.message : 'Failed to load wordsets'
+    errorMessage.value = e instanceof Error ? e.message : t('admin.wordsets.loadFailed')
   } finally {
     isLoading.value = false
   }
@@ -93,7 +95,7 @@ async function loadWordsets() {
 
 async function onCreateWordset() {
   const words = parseWords(form.wordsRaw)
-  if (words.length < 4) { errorMessage.value = 'A wordset needs at least 4 words'; return }
+  if (words.length < 4) { errorMessage.value = t('admin.wordsets.minWords'); return }
 
   isLoading.value = true
   errorMessage.value = null
@@ -104,7 +106,7 @@ async function onCreateWordset() {
     form.wordsRaw = ''
     await loadWordsets()
   } catch (e) {
-    errorMessage.value = e instanceof Error ? e.message : 'Failed to create wordset'
+    errorMessage.value = e instanceof Error ? e.message : t('admin.wordsets.createFailed')
   } finally {
     isLoading.value = false
   }
@@ -120,7 +122,7 @@ function beginEdit(ws: WordsetRead) {
 async function onSaveEdit() {
   if (editingId.value === null) return
   const words = parseWords(editForm.wordsRaw)
-  if (words.length < 4) { errorMessage.value = 'A wordset needs at least 4 words'; return }
+  if (words.length < 4) { errorMessage.value = t('admin.wordsets.minWords'); return }
 
   isLoading.value = true
   errorMessage.value = null
@@ -129,7 +131,7 @@ async function onSaveEdit() {
     editingId.value = null
     await loadWordsets()
   } catch (e) {
-    errorMessage.value = e instanceof Error ? e.message : 'Failed to update wordset'
+    errorMessage.value = e instanceof Error ? e.message : t('admin.wordsets.updateFailed')
   } finally {
     isLoading.value = false
   }
@@ -142,7 +144,7 @@ async function onDelete(id: number) {
     await deleteWordset(token(), id)
     await loadWordsets()
   } catch (e) {
-    errorMessage.value = e instanceof Error ? e.message : 'Failed to delete wordset'
+    errorMessage.value = e instanceof Error ? e.message : t('admin.wordsets.deleteFailed')
   } finally {
     isLoading.value = false
   }

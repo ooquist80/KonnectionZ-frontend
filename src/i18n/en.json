@@ -1,0 +1,242 @@
+{
+  "common": {
+    "back": "← Back",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "loading": "Loading...",
+    "edit": "Edit",
+    "delete": "Delete",
+    "send": "Send",
+    "none": "None",
+    "createAccount": "Create an account",
+    "or": "or"
+  },
+  "auth": {
+    "login": {
+      "title": "Log in to your account",
+      "username": "Username",
+      "password": "Password",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "register": "Register"
+    },
+    "register": {
+      "title": "Create an account",
+      "email": "Email",
+      "username": "Username",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "passwordMismatch": "Passwords do not match.",
+      "submitting": "Creating account…",
+      "next": "Next →",
+      "hasAccount": "Already have an account?",
+      "logIn": "Log in",
+      "avatarTitle": "Create your avatar",
+      "avatarSubtitle": "Customise how you appear to other players. You can change this later.",
+      "randomise": "Randomise",
+      "skipForNow": "Skip for now",
+      "saveAndContinue": "Save & continue",
+      "genericError": "Something went wrong. Please try again."
+    },
+    "account": {
+      "backLink": "← Back",
+      "title": "User account",
+      "subtitle": "Manage your account details.",
+      "avatarAlt": "Your avatar",
+      "userId": "User ID",
+      "username": "Username",
+      "email": "Email",
+      "scopes": "Scopes",
+      "noScopes": "No scopes assigned",
+      "editAccount": "Edit account",
+      "editAvatar": "Edit avatar",
+      "editTitle": "Edit account",
+      "changePassword": "Change password",
+      "newPassword": "New password",
+      "confirmNewPassword": "Confirm new password",
+      "saveChanges": "Save changes",
+      "passwordMismatch": "Passwords do not match.",
+      "accountUpdated": "Account updated successfully.",
+      "accountUpdateFailed": "Failed to update account.",
+      "passwordChanged": "Password changed successfully.",
+      "passwordChangeFailed": "Failed to change password.",
+      "backgroundTheme": "Background theme",
+      "language": "Language"
+    },
+    "avatarEditor": {
+      "title": "Edit avatar",
+      "backLink": "← Account",
+      "randomise": "Randomise",
+      "saveAvatar": "Save avatar",
+      "avatarSaved": "Avatar saved!",
+      "saveFailed": "Failed to save avatar."
+    }
+  },
+  "avatar": {
+    "preview": "Avatar preview",
+    "hatColour": "Hat colour",
+    "categories": {
+      "background": "Background",
+      "skin": "Skin",
+      "hair": "Hair",
+      "clothing": "Clothing",
+      "eyes": "Eyes",
+      "brows": "Brows",
+      "mouth": "Mouth",
+      "facialHair": "Facial hair",
+      "glasses": "Glasses"
+    }
+  },
+  "home": {
+    "title": "Main menu",
+    "welcome": "Welcome back, {username}.",
+    "dailyGame": "Daily Game",
+    "completedBadge": "✓ Completed",
+    "inProgressBadge": "In progress",
+    "selectGame": "Select a game",
+    "browseGames": "Browse all available games.",
+    "completedCount": "{completed} of {total} completed",
+    "userAccount": "User account",
+    "userAccountDesc": "View your signed-in account details.",
+    "administration": "Administration",
+    "administrationDesc": "Manage gamesets, wordsets and users.",
+    "dailyNoMisses": "Completed with no misses!",
+    "dailyCompleted": "Completed · {count} miss | Completed · {count} misses",
+    "dailyInProgress": "Come back and finish today's puzzle!",
+    "dailyNotStarted": "Jump straight into today's puzzle."
+  },
+  "game": {
+    "select": {
+      "title": "Select a game",
+      "description": "Select any available game to start playing.",
+      "noGames": "No games are available right now.",
+      "completed": "Completed",
+      "inProgress": "In progress",
+      "notPlayed": "Not played"
+    },
+    "play": {
+      "puzzle": "Puzzle",
+      "loading": "Loading puzzle..."
+    },
+    "daily": {
+      "title": "Daily puzzle",
+      "loading": "Loading today's puzzle..."
+    },
+    "board": {
+      "misses": "Misses: {count}",
+      "selected": "{count} of 4 selected",
+      "deselectAll": "Deselect all",
+      "shuffle": "Shuffle",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "toastAlmost": "Almost",
+      "toastIncorrect": "Incorrect"
+    }
+  },
+  "admin": {
+    "title": "Administration",
+    "tabs": {
+      "gamesets": "Gamesets",
+      "wordsets": "Wordsets",
+      "users": "Users"
+    },
+    "users": {
+      "createTitle": "Create new user",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "scopes": "Scopes",
+      "creating": "Creating...",
+      "createUser": "Create user",
+      "allUsers": "All users",
+      "loadingUsers": "Loading users…",
+      "noUsers": "No users found.",
+      "tableId": "ID",
+      "tableUsername": "Username",
+      "tableEmail": "Email",
+      "tableScopes": "Scopes",
+      "confirmDelete": "Delete user \"{username}\" (#{id})?",
+      "loadFailed": "Failed to load users",
+      "createFailed": "Failed to create user",
+      "deleteFailed": "Failed to delete user"
+    },
+    "userEdit": {
+      "title": "Edit user",
+      "loading": "Loading user…",
+      "username": "Username",
+      "email": "Email",
+      "scopes": "Scopes",
+      "changePassword": "Change password",
+      "newPassword": "New password",
+      "saveChanges": "Save changes",
+      "loadFailed": "Failed to load user",
+      "updateFailed": "Failed to update user"
+    },
+    "wordsets": {
+      "createTitle": "Create new wordset",
+      "category": "Category",
+      "difficulty": "Difficulty (1–4)",
+      "words": "Words (comma-separated, min 4)",
+      "wordsEdit": "Words (comma-separated)",
+      "creating": "Creating...",
+      "createWordset": "Create wordset",
+      "existingTitle": "Existing wordsets",
+      "loadingWordsets": "Loading wordsets...",
+      "noWordsets": "No wordsets found.",
+      "minWords": "A wordset needs at least 4 words",
+      "loadFailed": "Failed to load wordsets",
+      "createFailed": "Failed to create wordset",
+      "updateFailed": "Failed to update wordset",
+      "deleteFailed": "Failed to delete wordset"
+    },
+    "gamesets": {
+      "createTitle": "Create new gameset",
+      "name": "Name",
+      "dailyDate": "Daily date",
+      "dailyDateOptional": "(optional)",
+      "selectWordsets": "Select 4 wordsets",
+      "loadingWordsets": "Loading wordsets...",
+      "noWordsets": "No wordsets available. Create wordsets first.",
+      "creating": "Creating...",
+      "createGameset": "Create gameset ({count}/4 selected)",
+      "existingTitle": "Existing gamesets",
+      "loadingGamesets": "Loading gamesets...",
+      "noGamesets": "No gamesets found.",
+      "loadFailed": "Failed to load gamesets",
+      "createFailed": "Failed to create gameset",
+      "wordsetLoadFailed": "Failed to load wordsets"
+    }
+  },
+  "shared": {
+    "avatarMenu": {
+      "avatarAlt": "Your avatar",
+      "mainMenu": "Main menu",
+      "accountSettings": "Account settings",
+      "signOut": "Sign out"
+    },
+    "announcements": {
+      "title": "Announcements",
+      "loading": "Loading...",
+      "noAnnouncements": "No announcements yet.",
+      "hideComments": "Hide comments",
+      "comments": "Comments",
+      "loadingComments": "Loading comments...",
+      "noComments": "No comments yet.",
+      "commentPlaceholder": "Write a comment...",
+      "loadCommentsFailed": "Failed to load comments",
+      "postCommentFailed": "Failed to post comment"
+    }
+  },
+  "themes": {
+    "ocean": "Ocean",
+    "aurora": "Aurora",
+    "sunset": "Sunset",
+    "forest": "Forest",
+    "ember": "Ember",
+    "cosmos": "Cosmos",
+    "dark": "Dark",
+    "light": "Light"
+  }
+}

@@ -1,10 +1,10 @@
 <template>
   <section class="announcements">
-    <h2 class="announcements-title">Announcements</h2>
+    <h2 class="announcements-title">{{ $t('shared.announcements.title') }}</h2>
 
-    <p v-if="isLoading" class="announcements-empty">Loading...</p>
+    <p v-if="isLoading" class="announcements-empty">{{ $t('shared.announcements.loading') }}</p>
     <p v-else-if="error" class="announcements-empty">{{ error }}</p>
-    <p v-else-if="items.length === 0" class="announcements-empty">No announcements yet.</p>
+    <p v-else-if="items.length === 0" class="announcements-empty">{{ $t('shared.announcements.noAnnouncements') }}</p>
 
     <ul v-else class="announcements-list">
       <li v-for="item in items" :key="item.id" class="announcement-item">
@@ -12,7 +12,7 @@
           <img
             v-if="item.avatarSrc"
             :src="item.avatarSrc"
-            alt="User avatar"
+            :alt="$t('shared.avatarMenu.avatarAlt')"
             class="announcement-avatar"
           />
           <div v-else class="announcement-avatar announcement-avatar--placeholder" />
@@ -28,7 +28,7 @@
               class="comments-toggle"
               @click="toggleComments(item.id)"
             >
-              {{ expandedId === item.id ? 'Hide comments' : 'Comments' }}
+              {{ expandedId === item.id ? $t('shared.announcements.hideComments') : $t('shared.announcements.comments') }}
               <span v-if="commentCounts.get(item.id)" class="comment-count">({{ commentCounts.get(item.id) }})</span>
             </button>
           </div>
@@ -36,10 +36,10 @@
 
         <!-- Comments section (full width, below avatar row) -->
         <div v-if="expandedId === item.id" class="comments-section">
-          <p v-if="commentsLoading" class="comments-status">Loading comments...</p>
+          <p v-if="commentsLoading" class="comments-status">{{ $t('shared.announcements.loadingComments') }}</p>
           <p v-else-if="commentsError" class="comments-status comments-error">{{ commentsError }}</p>
           <template v-else>
-            <p v-if="comments.length === 0" class="comments-status">No comments yet.</p>
+            <p v-if="comments.length === 0" class="comments-status">{{ $t('shared.announcements.noComments') }}</p>
             <ul v-else class="comments-list">
               <li v-for="c in comments" :key="c.id" class="comment-item">
                 <strong class="comment-user">{{ c.user_name }}</strong>
@@ -53,13 +53,13 @@
             <input
               v-model="newComment"
               type="text"
-              placeholder="Write a comment..."
+              :placeholder="$t('shared.announcements.commentPlaceholder')"
               class="comment-input"
               required
               :disabled="commentSubmitting"
             />
             <button type="submit" class="comment-submit" :disabled="commentSubmitting || !newComment.trim()">
-              {{ commentSubmitting ? '...' : 'Send' }}
+              {{ commentSubmitting ? '...' : $t('common.send') }}
             </button>
           </form>
         </div>
@@ -70,11 +70,14 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { getAnnouncements, getComments, createComment } from '../api/announcementsApi'
 import { getUser } from '../api/authApi'
 import { buildAvatarSvg } from '../utils/avatarUtils'
 import { useAuthStore } from '../../auth/store/authStore'
 import type { AnnouncementRead, CommentRead } from '../types/api'
+
+const { t } = useI18n()
 
 interface AnnouncementItem extends AnnouncementRead {
   avatarSrc: string | null
@@ -134,7 +137,7 @@ onMounted(async () => {
       }),
     )
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Failed to load announcements'
+    error.value = err instanceof Error ? err.message : t('shared.announcements.loadCommentsFailed')
   } finally {
     isLoading.value = false
   }
@@ -156,7 +159,7 @@ async function toggleComments(announcementId: number) {
     comments.value = await getComments(announcementId)
     commentCounts.set(announcementId, comments.value.length)
   } catch (err) {
-    commentsError.value = err instanceof Error ? err.message : 'Failed to load comments'
+    commentsError.value = err instanceof Error ? err.message : t('shared.announcements.loadCommentsFailed')
   } finally {
     commentsLoading.value = false
   }
@@ -176,7 +179,7 @@ async function submitComment(announcementId: number) {
     commentCounts.set(announcementId, comments.value.length)
     newComment.value = ''
   } catch (err) {
-    commentsError.value = err instanceof Error ? err.message : 'Failed to post comment'
+    commentsError.value = err instanceof Error ? err.message : t('shared.announcements.postCommentFailed')
   } finally {
     commentSubmitting.value = false
   }

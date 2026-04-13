@@ -1,9 +1,9 @@
 <template>
   <section class="account-view">
     <div class="account-header">
-      <RouterLink to="/" class="back-link">← Back</RouterLink>
-      <h1>User account</h1>
-      <p>Manage your account details.</p>
+      <RouterLink to="/" class="back-link">{{ $t('auth.account.backLink') }}</RouterLink>
+      <h1>{{ $t('auth.account.title') }}</h1>
+      <p>{{ $t('auth.account.subtitle') }}</p>
     </div>
 
     <!-- Read-only account card -->
@@ -12,70 +12,70 @@
         <img
           v-if="currentAvatarSvg"
           :src="currentAvatarSvg"
-          alt="Your avatar"
+          :alt="$t('auth.account.avatarAlt')"
           class="avatar-img"
         />
       </div>
       <div class="account-row">
-        <span class="label">User ID</span>
+        <span class="label">{{ $t('auth.account.userId') }}</span>
         <strong>#{{ auth.user.value.id }}</strong>
       </div>
       <div class="account-row">
-        <span class="label">Username</span>
+        <span class="label">{{ $t('auth.account.username') }}</span>
         <strong>{{ auth.user.value.username }}</strong>
       </div>
       <div class="account-row">
-        <span class="label">Email</span>
+        <span class="label">{{ $t('auth.account.email') }}</span>
         <strong>{{ auth.user.value.email }}</strong>
       </div>
       <div class="account-row">
-        <span class="label">Scopes</span>
-        <strong>{{ auth.user.value.scopes.length ? auth.user.value.scopes.join(', ') : 'No scopes assigned' }}</strong>
+        <span class="label">{{ $t('auth.account.scopes') }}</span>
+        <strong>{{ auth.user.value.scopes.length ? auth.user.value.scopes.join(', ') : $t('auth.account.noScopes') }}</strong>
       </div>
       <div class="card-actions">
         <button class="btn-secondary" @click="toggleEditProfile">
-          {{ isEditing ? 'Cancel' : 'Edit account' }}
+          {{ isEditing ? $t('common.cancel') : $t('auth.account.editAccount') }}
         </button>
-        <RouterLink to="/account/avatar" class="btn-secondary">Edit avatar</RouterLink>
+        <RouterLink to="/account/avatar" class="btn-secondary">{{ $t('auth.account.editAvatar') }}</RouterLink>
       </div>
     </div>
 
     <!-- Edit account form -->
     <div v-if="isEditing" class="section">
-      <h2>Edit account</h2>
+      <h2>{{ $t('auth.account.editTitle') }}</h2>
       <div v-if="profileSuccess" class="success-banner">{{ profileSuccess }}</div>
       <div v-if="profileError" class="error-banner">{{ profileError }}</div>
       <form @submit.prevent="onSaveProfile">
-        <label for="username">Username</label>
+        <label for="username">{{ $t('auth.account.username') }}</label>
         <input id="username" v-model="username" required autocomplete="username" />
 
-        <label for="email">Email</label>
+        <label for="email">{{ $t('auth.account.email') }}</label>
         <input id="email" v-model="email" type="email" required autocomplete="email" />
 
         <label class="checkbox-label">
           <input type="checkbox" v-model="showPasswordChange" />
-          Change password
+          {{ $t('auth.account.changePassword') }}
         </label>
 
         <template v-if="showPasswordChange">
           <div v-if="passwordSuccess" class="success-banner">{{ passwordSuccess }}</div>
           <div v-if="passwordError" class="error-banner">{{ passwordError }}</div>
 
-          <label for="new-password">New password</label>
+          <label for="new-password">{{ $t('auth.account.newPassword') }}</label>
           <input id="new-password" v-model="newPassword" type="password" autocomplete="new-password" />
 
-          <label for="confirm-password">Confirm new password</label>
+          <label for="confirm-password">{{ $t('auth.account.confirmNewPassword') }}</label>
           <input id="confirm-password" v-model="confirmPassword" type="password" autocomplete="new-password" />
         </template>
 
         <button type="submit" :disabled="profileLoading || passwordLoading">
-          {{ profileLoading || passwordLoading ? 'Saving...' : 'Save changes' }}
+          {{ profileLoading || passwordLoading ? $t('common.saving') : $t('auth.account.saveChanges') }}
         </button>
       </form>
     </div>
     <!-- Theme picker -->
     <div class="section">
-      <h2>Background theme</h2>
+      <h2>{{ $t('auth.account.backgroundTheme') }}</h2>
       <div class="theme-grid">
         <button
           v-for="theme in themeStore.themes"
@@ -85,7 +85,24 @@
           :style="{ background: `linear-gradient(135deg, ${theme.preview[0]}, ${theme.preview[1]})` }"
           @click="themeStore.setTheme(theme.id)"
         >
-          <span class="theme-label" :class="{ 'theme-label--dark': theme.isLight }">{{ theme.label }}</span>
+          <span class="theme-label" :class="{ 'theme-label--dark': theme.isLight }">{{ $t(`themes.${theme.id}`) }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Language picker -->
+    <div class="section">
+      <h2>{{ $t('auth.account.language') }}</h2>
+      <div class="language-options">
+        <button
+          v-for="lang in languages"
+          :key="lang.code"
+          type="button"
+          class="language-btn"
+          :class="{ active: currentLocale === lang.code }"
+          @click="changeLocale(lang.code)"
+        >
+          {{ lang.flag }} {{ lang.label }}
         </button>
       </div>
     </div>
@@ -95,12 +112,24 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../store/authStore'
 import { useThemeStore } from '../../shared/store/themeStore'
 import { buildAvatarSvg } from '../../shared/utils/avatarUtils'
+import { setLocale } from '../../i18n'
 
+const { t, locale: currentLocale } = useI18n()
 const auth = useAuthStore()
 const themeStore = useThemeStore()
+
+const languages = [
+  { code: 'sv' as const, flag: '🇸🇪', label: 'Svenska' },
+  { code: 'en' as const, flag: '🇬🇧', label: 'English' },
+]
+
+function changeLocale(code: 'en' | 'sv') {
+  setLocale(code)
+}
 
 const currentAvatarSvg = computed(() =>
   auth.user.value?.avatar ? buildAvatarSvg(auth.user.value.avatar) : null,
@@ -153,16 +182,16 @@ async function onSaveProfile() {
   passwordSuccess.value = ''
 
   if (showPasswordChange.value && newPassword.value !== confirmPassword.value) {
-    passwordError.value = 'Passwords do not match.'
+    passwordError.value = t('auth.account.passwordMismatch')
     return
   }
 
   profileLoading.value = true
   try {
     await auth.updateProfile({ username: username.value, email: email.value })
-    profileSuccess.value = 'Account updated successfully.'
+    profileSuccess.value = t('auth.account.accountUpdated')
   } catch (err: unknown) {
-    profileError.value = extractErrorMessage(err) ?? 'Failed to update account.'
+    profileError.value = extractErrorMessage(err) ?? t('auth.account.accountUpdateFailed')
     return
   } finally {
     profileLoading.value = false
@@ -172,12 +201,12 @@ async function onSaveProfile() {
     passwordLoading.value = true
     try {
       await auth.changePassword(username.value, email.value, newPassword.value)
-      passwordSuccess.value = 'Password changed successfully.'
+      passwordSuccess.value = t('auth.account.passwordChanged')
       newPassword.value = ''
       confirmPassword.value = ''
       showPasswordChange.value = false
     } catch (err: unknown) {
-      passwordError.value = extractErrorMessage(err) ?? 'Failed to change password.'
+      passwordError.value = extractErrorMessage(err) ?? t('auth.account.passwordChangeFailed')
     } finally {
       passwordLoading.value = false
     }
@@ -383,5 +412,32 @@ input {
 .theme-label--dark {
   color: rgba(0, 0, 0, 0.7);
   text-shadow: 0 1px 3px rgba(255, 255, 255, 0.4);
+}
+
+.language-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.language-btn {
+  background: var(--kz-btn-bg);
+  border: 2px solid var(--kz-border);
+  border-radius: 2rem;
+  padding: 0.4rem 1rem;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--kz-btn-text);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.language-btn:hover {
+  background: var(--kz-btn-hover);
+}
+
+.language-btn.active {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.4);
 }
 </style>

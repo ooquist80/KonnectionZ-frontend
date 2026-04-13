@@ -10,21 +10,21 @@
 
     <!-- ── Step 1: Account details ── -->
     <template v-if="step === 1">
-      <h1>Create an account</h1>
+      <h1>{{ $t('auth.register.title') }}</h1>
 
       <div v-if="errorMessage" class="error-banner">{{ errorMessage }}</div>
 
       <form @submit.prevent="onSubmitStep1">
-        <label for="email">Email</label>
+        <label for="email">{{ $t('auth.register.email') }}</label>
         <input id="email" v-model="email" type="email" required autocomplete="email" />
 
-        <label for="username">Username</label>
+        <label for="username">{{ $t('auth.register.username') }}</label>
         <input id="username" v-model="username" required autocomplete="username" />
 
-        <label for="password">Password</label>
+        <label for="password">{{ $t('auth.register.password') }}</label>
         <input id="password" v-model="password" type="password" required autocomplete="new-password" />
 
-        <label for="confirm-password">Confirm password</label>
+        <label for="confirm-password">{{ $t('auth.register.confirmPassword') }}</label>
         <input
           id="confirm-password"
           v-model="confirmPassword"
@@ -33,15 +33,15 @@
           autocomplete="new-password"
           :class="{ 'input-error': passwordMismatch }"
         />
-        <p v-if="passwordMismatch" class="field-error">Passwords do not match.</p>
+        <p v-if="passwordMismatch" class="field-error">{{ $t('auth.register.passwordMismatch') }}</p>
 
         <button type="submit" :disabled="isLoading || passwordMismatch">
-          {{ isLoading ? 'Creating account…' : 'Next →' }}
+          {{ isLoading ? $t('auth.register.submitting') : $t('auth.register.next') }}
         </button>
       </form>
 
       <p class="sign-in-link">
-        Already have an account? <RouterLink to="/login">Log in</RouterLink>
+        {{ $t('auth.register.hasAccount') }} <RouterLink to="/login">{{ $t('auth.register.logIn') }}</RouterLink>
       </p>
     </template>
 
@@ -49,10 +49,10 @@
     <template v-else>
       <div class="step2-header">
         <div>
-          <h1>Create your avatar</h1>
-          <p class="step-subtitle">Customise how you appear to other players. You can change this later.</p>
+          <h1>{{ $t('auth.register.avatarTitle') }}</h1>
+          <p class="step-subtitle">{{ $t('auth.register.avatarSubtitle') }}</p>
         </div>
-        <button type="button" class="randomize-btn" @click="randomize">🎲 <span class="randomize-label">Randomise</span></button>
+        <button type="button" class="randomize-btn" @click="randomize">🎲 <span class="randomize-label">{{ $t('auth.register.randomise') }}</span></button>
       </div>
 
       <div v-if="avatarError" class="error-banner">{{ avatarError }}</div>
@@ -60,9 +60,9 @@
       <AvatarEditor v-model="pendingAvatarStr" />
 
       <div class="save-row">
-        <button type="button" class="btn-secondary" @click="skipAvatar">Skip for now</button>
+        <button type="button" class="btn-secondary" @click="skipAvatar">{{ $t('auth.register.skipForNow') }}</button>
         <button type="button" class="btn-primary" :disabled="isLoading" @click="onSaveAvatar">
-          {{ isLoading ? 'Saving…' : 'Save & continue' }}
+          {{ isLoading ? $t('common.saving') : $t('auth.register.saveAndContinue') }}
         </button>
       </div>
     </template>
@@ -73,12 +73,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { requestJson } from '../../shared/api/http'
 import type { UserRead, UserWrite } from '../../shared/types/api'
 import { useAuthStore } from '../store/authStore'
 import { randomizeAvatarOptions, serializeAvatarOptions } from '../../shared/utils/avatarUtils'
 import AvatarEditor from '../components/AvatarEditor.vue'
 
+const { t } = useI18n()
 const auth = useAuthStore()
 const router = useRouter()
 
@@ -101,7 +103,7 @@ function extractErrorMessage(err: unknown): string {
     if (typeof detail === 'string') return detail
     if (Array.isArray(detail)) return detail.map((d: { msg: string }) => d.msg).join(', ')
   }
-  return err instanceof Error ? err.message : 'Something went wrong. Please try again.'
+  return err instanceof Error ? err.message : t('auth.register.genericError')
 }
 
 async function onSubmitStep1() {

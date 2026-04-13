@@ -1,8 +1,8 @@
 <template>
   <section class="daily-view">
-    <RouterLink to="/" class="back-link">← Back</RouterLink>
-    <h1>{{ game.gameName.value ?? 'Daily puzzle' }}</h1>
-    <p v-if="game.isLoading.value && !game.currentResult.value" class="status-message">Loading today's puzzle...</p>
+    <RouterLink to="/" class="back-link">{{ $t('common.back') }}</RouterLink>
+    <h1>{{ game.gameName.value ?? $t('game.daily.title') }}</h1>
+    <p v-if="game.isLoading.value && !game.currentResult.value" class="status-message">{{ $t('game.daily.loading') }}</p>
 
     <GameBoard
       v-if="game.currentResult.value"

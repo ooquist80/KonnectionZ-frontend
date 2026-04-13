@@ -1,9 +1,9 @@
 <template>
   <section class="game-play-view">
-    <RouterLink to="/game" class="back-link">← Back</RouterLink>
-    <h1>{{ game.gameName.value ?? 'Puzzle' }}</h1>
+    <RouterLink to="/game" class="back-link">{{ $t('common.back') }}</RouterLink>
+    <h1>{{ game.gameName.value ?? $t('game.play.puzzle') }}</h1>
 
-    <p v-if="game.isLoading.value && !game.currentResult.value" class="status-message">Loading puzzle...</p>
+    <p v-if="game.isLoading.value && !game.currentResult.value" class="status-message">{{ $t('game.play.loading') }}</p>
 
     <GameBoard
       v-if="game.currentResult.value"

@@ -1,23 +1,23 @@
 <template>
   <section class="login-view">
-    <h1>Log in to your account</h1>
+    <h1>{{ $t('auth.login.title') }}</h1>
 
     <ApiErrorBanner :message="auth.errorMessage.value" />
 
     <form @submit.prevent="onSubmit">
-      <label for="username">Username</label>
+      <label for="username">{{ $t('auth.login.username') }}</label>
       <input id="username" v-model="username" required autocomplete="username" />
 
-      <label for="password">Password</label>
+      <label for="password">{{ $t('auth.login.password') }}</label>
       <input id="password" v-model="password" type="password" required autocomplete="current-password" />
 
       <button type="submit" :disabled="auth.isLoading.value">
-        {{ auth.isLoading.value ? 'Signing in...' : 'Sign in' }}
+        {{ auth.isLoading.value ? $t('auth.login.submitting') : $t('auth.login.submit') }}
       </button>
     </form>
 
     <p class="register-link">
-      Don't have an account? <RouterLink to="/register">Register</RouterLink>
+      {{ $t('auth.login.noAccount') }} <RouterLink to="/register">{{ $t('auth.login.register') }}</RouterLink>
     </p>
   </section>
 </template>

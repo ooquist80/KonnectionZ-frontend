@@ -23,8 +23,8 @@
     <!-- Miss count -->
     <!-- Miss count + selection count -->
     <div v-if="wordsRemaining.length" class="game-meta">
-      <span class="miss-count">Misses: {{ missCount }}</span>
-      <span class="selection-count">{{ selectedWords.size }} of 4 selected</span>
+      <span class="miss-count">{{ $t('game.board.misses', { count: missCount }) }}</span>
+      <span class="selection-count">{{ $t('game.board.selected', { count: selectedWords.size }) }}</span>
     </div>
 
     <!-- Word grid -->
@@ -50,14 +50,14 @@
           :disabled="selectedWords.size === 0"
           @click="deselectAll"
         >
-          Deselect all
+          {{ $t('game.board.deselectAll') }}
         </button>
         <button
           type="button"
           class="btn btn-secondary"
           @click="shuffleWords"
         >
-          Shuffle
+          {{ $t('game.board.shuffle') }}
         </button>
         <button
           type="button"
@@ -65,7 +65,7 @@
           :disabled="selectedWords.size !== 4 || isLoading"
           @click="onSubmit"
         >
-          {{ isLoading ? 'Submitting...' : 'Submit' }}
+          {{ isLoading ? $t('game.board.submitting') : $t('game.board.submit') }}
         </button>
       </div>
     </div>
@@ -74,8 +74,11 @@
 
 <script setup lang="ts">
 import { nextTick, reactive, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { WordsetRead } from '../../shared/types/api'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   wordsRemaining: string[]
@@ -103,11 +106,17 @@ watch(
     if (!msg) return
     if (toastTimer) clearTimeout(toastTimer)
 
-    if (msg.startsWith('Almost')) toastClass.value = 'toast-almost'
-    else if (msg.startsWith('Incorrect')) toastClass.value = 'toast-incorrect'
-    else toastClass.value = 'toast-correct'
+    if (msg.startsWith('Almost')) {
+      toastClass.value = 'toast-almost'
+      toastMessage.value = t('game.board.toastAlmost')
+    } else if (msg.startsWith('Incorrect')) {
+      toastClass.value = 'toast-incorrect'
+      toastMessage.value = t('game.board.toastIncorrect')
+    } else {
+      toastClass.value = 'toast-correct'
+      toastMessage.value = msg
+    }
 
-    toastMessage.value = msg
     toastTimer = setTimeout(() => { toastMessage.value = null }, 2200)
   },
 )

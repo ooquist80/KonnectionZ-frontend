@@ -1,7 +1,7 @@
 <template>
   <section class="admin-view">
-    <RouterLink to="/" class="back-link">← Back</RouterLink>
-    <h1>Administration</h1>
+    <RouterLink to="/" class="back-link">{{ $t('common.back') }}</RouterLink>
+    <h1>{{ $t('admin.title') }}</h1>
 
     <nav class="tab-bar">
       <button
@@ -22,18 +22,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import GamesetManager from '../components/GamesetManager.vue'
 import WordsetManager from '../components/WordsetManager.vue'
 import UserManager from '../components/UserManager.vue'
 
-const tabs = [
-  { id: 'gamesets', label: 'Gamesets' },
-  { id: 'wordsets', label: 'Wordsets' },
-  { id: 'users', label: 'Users' },
-] as const
+const { t } = useI18n()
 
-const activeTab = ref<(typeof tabs)[number]['id']>('gamesets')
+type TabId = 'gamesets' | 'wordsets' | 'users'
+
+const tabs = computed(() => [
+  { id: 'gamesets' as const, label: t('admin.tabs.gamesets') },
+  { id: 'wordsets' as const, label: t('admin.tabs.wordsets') },
+  { id: 'users' as const, label: t('admin.tabs.users') },
+])
+
+const activeTab = ref<TabId>('gamesets')
 </script>
 
 <style scoped>

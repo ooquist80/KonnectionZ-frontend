@@ -4,36 +4,36 @@
 
     <!-- Create user form -->
     <details class="create-section">
-      <summary>Create new user</summary>
+      <summary>{{ $t('admin.users.createTitle') }}</summary>
       <form class="create-form" @submit.prevent="onCreateUser">
-        <label for="u-username">Username</label>
+        <label for="u-username">{{ $t('admin.users.username') }}</label>
         <input id="u-username" v-model="form.username" required placeholder="johndoe" />
 
-        <label for="u-email">Email</label>
+        <label for="u-email">{{ $t('admin.users.email') }}</label>
         <input id="u-email" v-model="form.email" type="email" required placeholder="john@example.com" />
 
-        <label for="u-password">Password</label>
+        <label for="u-password">{{ $t('admin.users.password') }}</label>
         <input id="u-password" v-model="form.password" type="password" required />
 
-        <label for="u-scopes">Scopes</label>
+        <label for="u-scopes">{{ $t('admin.users.scopes') }}</label>
         <input id="u-scopes" v-model="form.scopes" placeholder="user:play,user:admin" />
 
-        <button type="submit" :disabled="isLoading">{{ isLoading ? 'Creating...' : 'Create user' }}</button>
+        <button type="submit" :disabled="isLoading">{{ isLoading ? $t('admin.users.creating') : $t('admin.users.createUser') }}</button>
       </form>
     </details>
 
     <!-- All users list -->
     <div class="users-section">
-      <h3>All users</h3>
-      <p v-if="usersLoading" class="status-text">Loading users…</p>
-      <p v-else-if="!users.length" class="status-text">No users found.</p>
+      <h3>{{ $t('admin.users.allUsers') }}</h3>
+      <p v-if="usersLoading" class="status-text">{{ $t('admin.users.loadingUsers') }}</p>
+      <p v-else-if="!users.length" class="status-text">{{ $t('admin.users.noUsers') }}</p>
       <table v-else class="users-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Scopes</th>
+            <th>{{ $t('admin.users.tableId') }}</th>
+            <th>{{ $t('admin.users.tableUsername') }}</th>
+            <th>{{ $t('admin.users.tableEmail') }}</th>
+            <th>{{ $t('admin.users.tableScopes') }}</th>
             <th></th>
           </tr>
         </thead>
@@ -42,7 +42,7 @@
             <td>{{ user.id }}</td>
             <td>{{ user.username }}</td>
             <td>{{ user.email }}</td>
-            <td>{{ user.scopes.length ? user.scopes.join(', ') : 'None' }}</td>
+            <td>{{ user.scopes.length ? user.scopes.join(', ') : $t('common.none') }}</td>
             <td>
               <div class="row-actions">
                 <button
@@ -50,14 +50,14 @@
                   :disabled="isLoading"
                   @click="router.push({ name: 'admin-user-edit', params: { userId: user.id } })"
                 >
-                  Edit
+                  {{ $t('common.edit') }}
                 </button>
                 <button
                   class="delete-btn"
                   :disabled="isLoading"
                   @click="onDeleteUser(user.id, user.username)"
                 >
-                  Delete
+                  {{ $t('common.delete') }}
                 </button>
               </div>
             </td>
@@ -71,11 +71,13 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import type { UserRead } from '../../shared/types/api'
 import { createUser, listUsers, deleteUser } from '../../shared/api/adminApi'
 import { useAuthStore } from '../../auth/store/authStore'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
 
+const { t } = useI18n()
 const auth = useAuthStore()
 const router = useRouter()
 const isLoading = ref(false)
@@ -95,7 +97,7 @@ async function fetchUsers() {
   try {
     users.value = await listUsers(token())
   } catch (e) {
-    errorMessage.value = e instanceof Error ? e.message : 'Failed to load users'
+    errorMessage.value = e instanceof Error ? e.message : t('admin.users.loadFailed')
   } finally {
     usersLoading.value = false
   }
@@ -119,21 +121,21 @@ async function onCreateUser() {
     form.scopes = 'user:play'
     await fetchUsers()
   } catch (e) {
-    errorMessage.value = e instanceof Error ? e.message : 'Failed to create user'
+    errorMessage.value = e instanceof Error ? e.message : t('admin.users.createFailed')
   } finally {
     isLoading.value = false
   }
 }
 
 async function onDeleteUser(userId: number, username: string) {
-  if (!confirm(`Delete user "${username}" (#${userId})?`)) return
+  if (!confirm(t('admin.users.confirmDelete', { username, id: userId }))) return
   isLoading.value = true
   errorMessage.value = null
   try {
     await deleteUser(token(), userId)
     await fetchUsers()
   } catch (e) {
-    errorMessage.value = e instanceof Error ? e.message : 'Failed to delete user'
+    errorMessage.value = e instanceof Error ? e.message : t('admin.users.deleteFailed')
   } finally {
     isLoading.value = false
   }
