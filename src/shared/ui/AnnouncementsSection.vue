@@ -29,7 +29,7 @@
               @click="toggleComments(item.id)"
             >
               {{ expandedId === item.id ? $t('shared.announcements.hideComments') : $t('shared.announcements.comments') }}
-              <span v-if="commentCounts.get(item.id)" class="comment-count">({{ commentCounts.get(item.id) }})</span>
+              <span v-if="item.comment_count" class="comment-count">({{ item.comment_count }})</span>
             </button>
           </div>
         </div>
@@ -69,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getAnnouncements, getComments, createComment } from '../api/announcementsApi'
 import { getUser } from '../api/authApi'
@@ -94,7 +94,6 @@ const commentsLoading = ref(false)
 const commentsError = ref<string | null>(null)
 const newComment = ref('')
 const commentSubmitting = ref(false)
-const commentCounts = reactive(new Map<number, number>())
 
 onMounted(async () => {
   const token = auth.token.value
@@ -124,18 +123,6 @@ onMounted(async () => {
       ...a,
       avatarSrc: a.user_id !== null ? (userMap.get(a.user_id) ?? null) : null,
     }))
-
-    // Fetch comment counts in parallel
-    await Promise.all(
-      announcements.map(async (a) => {
-        try {
-          const c = await getComments(a.id)
-          commentCounts.set(a.id, c.length)
-        } catch {
-          // silently skip
-        }
-      }),
-    )
   } catch (err) {
     error.value = err instanceof Error ? err.message : t('shared.announcements.loadCommentsFailed')
   } finally {
@@ -157,7 +144,10 @@ async function toggleComments(announcementId: number) {
 
   try {
     comments.value = await getComments(announcementId)
-    commentCounts.set(announcementId, comments.value.length)
+    const item = items.value.find(a => a.id === announcementId)
+    if (item) {
+      item.comment_count = comments.value.length
+    }
   } catch (err) {
     commentsError.value = err instanceof Error ? err.message : t('shared.announcements.loadCommentsFailed')
   } finally {
@@ -176,7 +166,10 @@ async function submitComment(announcementId: number) {
       content: newComment.value.trim(),
     })
     comments.value.push(created)
-    commentCounts.set(announcementId, comments.value.length)
+    const item = items.value.find(a => a.id === announcementId)
+    if (item) {
+      item.comment_count++
+    }
     newComment.value = ''
   } catch (err) {
     commentsError.value = err instanceof Error ? err.message : t('shared.announcements.postCommentFailed')

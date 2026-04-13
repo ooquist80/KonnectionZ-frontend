@@ -84,6 +84,7 @@ export interface AnnouncementRead {
   user_id: number | null
   announced_at: string
   content: string
+  comment_count: number
 }
 
 export interface CommentRead {
