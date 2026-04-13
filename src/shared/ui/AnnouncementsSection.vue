@@ -225,6 +225,8 @@ function formatDate(iso: string): string {
   border: 1px solid var(--kz-border);
   border-radius: 0.6rem;
   background: var(--kz-surface);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .announcement-avatar {
@@ -279,10 +281,12 @@ function formatDate(iso: string): string {
 
 .comments-section {
   display: grid;
-  gap: 0.5rem;
+  gap: 0.4rem;
   margin-top: 0.35rem;
   padding-top: 0.5rem;
   border-top: 1px solid var(--kz-border);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .comments-status {
@@ -300,28 +304,32 @@ function formatDate(iso: string): string {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.4rem;
+  gap: 0.3rem;
+  max-height: 12rem;
+  overflow-y: auto;
 }
 
 .comment-item {
   display: grid;
-  gap: 0.1rem;
+  gap: 0.05rem;
 }
 
 .comment-user {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--kz-text);
 }
 
 .comment-content {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--kz-text);
-  line-height: 1.4;
+  line-height: 1.35;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .comment-time {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--kz-text-faint);
 }
 
@@ -329,15 +337,16 @@ function formatDate(iso: string): string {
 
 .comment-form {
   display: flex;
-  gap: 0.35rem;
-  margin-top: 0.25rem;
+  gap: 0.3rem;
+  margin-top: 0.15rem;
+  min-width: 0;
 }
 
 .comment-input {
   flex: 1;
   font: inherit;
-  font-size: 0.85rem;
-  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.7rem;
   border: 1px solid var(--kz-border);
   border-radius: 2rem;
   min-width: 0;
@@ -346,7 +355,8 @@ function formatDate(iso: string): string {
 }
 
 .comment-submit {
-  font-size: 0.8rem;
-  padding: 0.4rem 0.9rem;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.7rem;
+  flex-shrink: 0;
 }
 </style>
