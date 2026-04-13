@@ -56,8 +56,10 @@ form {
 input {
   font: inherit;
   padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 2rem;
+  background: var(--kz-input-bg);
+  color: var(--kz-text);
 }
 .register-link {
   margin-top: 1rem;

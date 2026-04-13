@@ -75,7 +75,7 @@ async function onSubmitWords(words: string[]) {
   right: 0;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--kz-text-muted);
   text-decoration: none;
   white-space: nowrap;
 }
@@ -85,11 +85,11 @@ h1 {
 }
 
 .back-link:hover {
-  color: #1f2937;
+  color: var(--kz-text);
 }
 
 .status-message {
   margin: 0;
-  color: #4b5563;
+  color: var(--kz-text-muted);
 }
 </style>

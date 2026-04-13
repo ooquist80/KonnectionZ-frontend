@@ -43,12 +43,12 @@ const activeTab = ref<(typeof tabs)[number]['id']>('gamesets')
   right: 0;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--kz-text-muted);
   text-decoration: none;
 }
 
 .back-link:hover {
-  color: #1f2937;
+  color: var(--kz-text);
 }
 
 .admin-view {

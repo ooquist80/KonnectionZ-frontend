@@ -200,12 +200,12 @@ function formatDate(iso: string): string {
   font-size: 1.1rem;
   font-weight: 700;
   margin: 0;
-  color: #1f2937;
+  color: var(--kz-text);
 }
 
 .announcements-empty {
   margin: 0;
-  color: #6b7280;
+  color: var(--kz-text-muted);
   font-size: 0.9rem;
 }
 
@@ -222,9 +222,9 @@ function formatDate(iso: string): string {
   gap: 0.75rem;
   align-items: flex-start;
   padding: 0.9rem 1rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--kz-border);
   border-radius: 0.6rem;
-  background: #fff;
+  background: var(--kz-surface);
 }
 
 .announcement-avatar {
@@ -235,7 +235,7 @@ function formatDate(iso: string): string {
 }
 
 .announcement-avatar--placeholder {
-  background: #e5e7eb;
+  background: var(--kz-surface-hover);
 }
 
 .announcement-body {
@@ -248,13 +248,13 @@ function formatDate(iso: string): string {
 .announcement-content {
   margin: 0;
   font-size: 0.9rem;
-  color: #1f2937;
+  color: var(--kz-text);
   line-height: 1.5;
 }
 
 .announcement-time {
   font-size: 0.78rem;
-  color: #9ca3af;
+  color: var(--kz-text-faint);
 }
 
 /* ── Comments toggle ── */
@@ -267,12 +267,12 @@ function formatDate(iso: string): string {
   padding: 0;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--kz-text-muted);
   cursor: pointer;
 }
 
 .comments-toggle:hover {
-  color: #374151;
+  color: var(--kz-text);
 }
 
 /* ── Comments section ── */
@@ -282,13 +282,13 @@ function formatDate(iso: string): string {
   gap: 0.5rem;
   margin-top: 0.35rem;
   padding-top: 0.5rem;
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--kz-border);
 }
 
 .comments-status {
   margin: 0;
   font-size: 0.82rem;
-  color: #9ca3af;
+  color: var(--kz-text-faint);
 }
 
 .comments-error {
@@ -310,19 +310,19 @@ function formatDate(iso: string): string {
 
 .comment-user {
   font-size: 0.8rem;
-  color: #374151;
+  color: var(--kz-text);
 }
 
 .comment-content {
   margin: 0;
   font-size: 0.85rem;
-  color: #1f2937;
+  color: var(--kz-text);
   line-height: 1.4;
 }
 
 .comment-time {
   font-size: 0.72rem;
-  color: #9ca3af;
+  color: var(--kz-text-faint);
 }
 
 /* ── Comment form ── */
@@ -338,9 +338,11 @@ function formatDate(iso: string): string {
   font: inherit;
   font-size: 0.85rem;
   padding: 0.4rem 0.75rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 2rem;
   min-width: 0;
+  background: var(--kz-input-bg);
+  color: var(--kz-text);
 }
 
 .comment-submit {

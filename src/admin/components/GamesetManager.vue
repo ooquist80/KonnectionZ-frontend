@@ -151,11 +151,11 @@ onMounted(loadGamesets)
 
 .muted {
   margin: 0;
-  color: #6b7280;
+  color: var(--kz-text-muted);
 }
 
 .create-section {
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 0.75rem;
   padding: 1rem;
 }
@@ -176,9 +176,11 @@ summary {
 .create-form > input {
   font: inherit;
   padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 2rem;
   max-width: 30rem;
+  background: var(--kz-input-bg);
+  color: var(--kz-text);
 }
 
 .wordset-picker {
@@ -194,19 +196,20 @@ summary {
   gap: 0.25rem 0.5rem;
   align-items: start;
   padding: 0.6rem 0.75rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 0.5rem;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
 }
 
 .picker-item:hover {
-  background: #f9fafb;
+  background: var(--kz-surface-hover);
 }
 
 .picker-item.picked {
   border-color: #16a34a;
   background: #f0fdf4;
+  color: #1f2937;
 }
 
 .picker-item input[type="checkbox"] {
@@ -227,9 +230,9 @@ summary {
   display: grid;
   gap: 0.5rem;
   padding: 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 0.75rem;
-  background: #fff;
+  background: var(--kz-surface);
 }
 
 .gameset-header {
@@ -249,8 +252,8 @@ summary {
 .tag {
   font-size: 0.8rem;
   padding: 0.25rem 0.6rem;
-  background: #f3f4f6;
+  background: var(--kz-btn-hover);
   border-radius: 999px;
-  color: #374151;
+  color: var(--kz-text);
 }
 </style>

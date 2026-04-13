@@ -95,10 +95,10 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onClickOutside))
   top: calc(100% + 0.5rem);
   right: 0;
   min-width: 13rem;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--kz-surface-raised);
+  border: 1px solid var(--kz-border);
   border-radius: 0.6rem;
-  box-shadow: 0 8px 24px rgba(17, 24, 39, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   z-index: 50;
   overflow: hidden;
 }
@@ -111,7 +111,7 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onClickOutside))
   font-size: 0.9rem;
   text-align: left;
   text-decoration: none;
-  color: #1f2937;
+  color: var(--kz-text);
   background: none;
   border: none;
   cursor: pointer;
@@ -119,7 +119,7 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onClickOutside))
 }
 
 .dropdown-item:hover {
-  background: #f3f4f6;
+  background: var(--kz-btn-hover);
 }
 
 .dropdown-item--danger {
@@ -133,7 +133,7 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onClickOutside))
 .dropdown-divider {
   margin: 0;
   border: none;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--kz-border);
 }
 
 /* ── Transition ──────────────────────────────────────────────────────────────── */

@@ -73,6 +73,22 @@
         </button>
       </form>
     </div>
+    <!-- Theme picker -->
+    <div class="section">
+      <h2>Background theme</h2>
+      <div class="theme-grid">
+        <button
+          v-for="theme in themeStore.themes"
+          :key="theme.id"
+          class="theme-swatch"
+          :class="{ active: themeStore.activeThemeId.value === theme.id }"
+          :style="{ background: `linear-gradient(135deg, ${theme.preview[0]}, ${theme.preview[1]})` }"
+          @click="themeStore.setTheme(theme.id)"
+        >
+          <span class="theme-label" :class="{ 'theme-label--dark': theme.isLight }">{{ theme.label }}</span>
+        </button>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -80,9 +96,11 @@
 import { computed, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '../store/authStore'
+import { useThemeStore } from '../../shared/store/themeStore'
 import { buildAvatarSvg } from '../../shared/utils/avatarUtils'
 
 const auth = useAuthStore()
+const themeStore = useThemeStore()
 
 const currentAvatarSvg = computed(() =>
   auth.user.value?.avatar ? buildAvatarSvg(auth.user.value.avatar) : null,
@@ -189,12 +207,12 @@ function extractErrorMessage(err: unknown): string | null {
   right: 0;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--kz-text-muted);
   text-decoration: none;
 }
 
 .back-link:hover {
-  color: #1f2937;
+  color: var(--kz-text);
 }
 
 .account-view {
@@ -208,16 +226,16 @@ function extractErrorMessage(err: unknown): string | null {
 
 .account-header p {
   margin: 0;
-  color: #4b5563;
+  color: var(--kz-text-muted);
 }
 
 .account-card {
   display: grid;
   gap: 1rem;
   padding: 1.25rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 0.75rem;
-  background: #ffffff;
+  background: var(--kz-surface);
 }
 
 .avatar-row {
@@ -229,7 +247,7 @@ function extractErrorMessage(err: unknown): string | null {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: #f3f4f6;
+  background: var(--kz-btn-hover);
 }
 
 .account-row {
@@ -239,7 +257,7 @@ function extractErrorMessage(err: unknown): string | null {
 
 .label {
   font-size: 0.85rem;
-  color: #6b7280;
+  color: var(--kz-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -270,8 +288,10 @@ form {
 input {
   font: inherit;
   padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 2rem;
+  background: var(--kz-input-bg);
+  color: var(--kz-text);
 }
 
 .checkbox-label {
@@ -290,21 +310,21 @@ input {
 }
 
 .btn-secondary {
-  background: transparent;
-  border: 1px solid #d1d5db;
+  background: var(--kz-btn-bg);
+  border: 1px solid var(--kz-border);
   border-radius: 2rem;
   padding: 0.4rem 1.1rem;
   font: inherit;
   font-size: 0.9rem;
   cursor: pointer;
-  color: #374151;
+  color: var(--kz-btn-text);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
 }
 
 .btn-secondary:hover {
-  background: #f3f4f6;
+  background: var(--kz-btn-hover);
 }
 
 .success-banner {
@@ -321,5 +341,47 @@ input {
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   max-width: 26rem;
+}
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  max-width: 26rem;
+}
+
+.theme-swatch {
+  position: relative;
+  height: 60px;
+  border: 2px solid transparent;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0.35rem;
+  transition: border-color 0.2s, transform 0.15s;
+}
+
+.theme-swatch:hover {
+  transform: scale(1.05);
+  background-blend-mode: normal;
+}
+
+.theme-swatch.active {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.4);
+}
+
+.theme-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.theme-label--dark {
+  color: rgba(0, 0, 0, 0.7);
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.4);
 }
 </style>

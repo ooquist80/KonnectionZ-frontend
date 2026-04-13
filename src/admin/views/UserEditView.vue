@@ -110,29 +110,29 @@ async function onSubmit() {
 }
 
 .back-btn {
-  background: none;
-  border: 1px solid #d1d5db;
+  background: var(--kz-btn-bg);
+  border: 1px solid var(--kz-border);
   border-radius: 2rem;
   padding: 0.35rem 0.9rem;
   font-size: 0.875rem;
   cursor: pointer;
-  color: #374151;
+  color: var(--kz-btn-text);
   transition: border-color 0.15s;
 }
 
 .back-btn:hover {
-  border-color: #6b7280;
+  border-color: var(--kz-text-muted);
 }
 
 .status-text {
-  color: #6b7280;
+  color: var(--kz-text-muted);
 }
 
 .edit-form {
   display: grid;
   gap: 0.5rem;
   max-width: 30rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 0.75rem;
   padding: 1.25rem;
 }
@@ -140,13 +140,15 @@ async function onSubmit() {
 .edit-form input {
   font: inherit;
   padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 2rem;
+  background: var(--kz-input-bg);
+  color: var(--kz-text);
 }
 
 .field-hint {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: var(--kz-text-faint);
   font-weight: normal;
 }
 

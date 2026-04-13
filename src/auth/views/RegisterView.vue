@@ -174,9 +174,9 @@ function skipAvatar() {
   justify-content: center;
   font-size: 0.85rem;
   font-weight: 700;
-  border: 2px solid #d1d5db;
-  background: #fff;
-  color: #9ca3af;
+  border: 2px solid var(--kz-border);
+  background: var(--kz-btn-bg);
+  color: var(--kz-text-faint);
   flex-shrink: 0;
 }
 
@@ -195,7 +195,7 @@ function skipAvatar() {
 .step-line {
   flex: 1;
   height: 2px;
-  background: #d1d5db;
+  background: var(--kz-border);
   transition: background 0.3s;
 }
 
@@ -213,8 +213,10 @@ form {
 input {
   font: inherit;
   padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 2rem;
+  background: var(--kz-input-bg);
+  color: var(--kz-text);
 }
 
 input.input-error {
@@ -241,24 +243,24 @@ input.input-error {
   position: absolute;
   bottom: 0;
   right: 0;
-  background: transparent;
-  border: 1px solid #d1d5db;
+  background: var(--kz-btn-bg);
+  border: 1px solid var(--kz-border);
   border-radius: 2rem;
   padding: 0.35rem 0.9rem;
   font: inherit;
   font-size: 0.95rem;
   cursor: pointer;
-  color: #374151;
+  color: var(--kz-btn-text);
   white-space: nowrap;
 }
 
 .randomize-btn:hover {
-  background: #f3f4f6;
+  background: var(--kz-btn-hover);
 }
 
 .step-subtitle {
   margin: 0;
-  color: #6b7280;
+  color: var(--kz-text-muted);
   font-size: 0.95rem;
 }
 
@@ -269,18 +271,18 @@ input.input-error {
 }
 
 .btn-secondary {
-  background: transparent;
-  border: 1px solid #d1d5db;
+  background: var(--kz-btn-bg);
+  border: 1px solid var(--kz-border);
   border-radius: 2rem;
   padding: 0.5rem 1.2rem;
   font: inherit;
   font-size: 0.95rem;
   cursor: pointer;
-  color: #374151;
+  color: var(--kz-btn-text);
 }
 
 .btn-secondary:hover {
-  background: #f3f4f6;
+  background: var(--kz-btn-hover);
 }
 
 .btn-primary {

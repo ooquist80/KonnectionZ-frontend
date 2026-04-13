@@ -82,12 +82,12 @@ async function onSaveAvatar() {
   top: 0;
   right: 0;
   font-size: 0.9rem;
-  color: #6b7280;
+  color: var(--kz-text-muted);
   text-decoration: none;
 }
 
 .back-link:hover {
-  color: #111827;
+  color: var(--kz-text);
 }
 
 .editor-toolbar {
@@ -96,19 +96,19 @@ async function onSaveAvatar() {
 }
 
 .randomize-btn {
-  background: transparent;
-  border: 1px solid #d1d5db;
+  background: var(--kz-btn-bg);
+  border: 1px solid var(--kz-border);
   border-radius: 2rem;
   padding: 0.35rem 0.9rem;
   font: inherit;
   font-size: 0.95rem;
   cursor: pointer;
-  color: #374151;
+  color: var(--kz-btn-text);
   white-space: nowrap;
 }
 
 .randomize-btn:hover {
-  background: #f3f4f6;
+  background: var(--kz-btn-hover);
 }
 
 @media (max-width: 480px) {

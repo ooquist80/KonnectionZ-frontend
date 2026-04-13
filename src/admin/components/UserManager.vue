@@ -147,7 +147,7 @@ async function onDeleteUser(userId: number, username: string) {
 }
 
 .create-section {
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 0.75rem;
   padding: 1rem;
 }
@@ -167,12 +167,14 @@ summary {
 .create-form input {
   font: inherit;
   padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 2rem;
+  background: var(--kz-input-bg);
+  color: var(--kz-text);
 }
 
 .users-section {
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 0.75rem;
   padding: 1rem;
 }
@@ -182,7 +184,7 @@ summary {
 }
 
 .status-text {
-  color: #6b7280;
+  color: var(--kz-text-muted);
   font-size: 0.9rem;
 }
 
@@ -196,19 +198,19 @@ summary {
 .users-table td {
   text-align: left;
   padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--kz-border);
 }
 
 .users-table th {
   font-size: 0.8rem;
-  color: #6b7280;
+  color: var(--kz-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-weight: 600;
 }
 
 .users-table tbody tr:hover {
-  background: #f9fafb;
+  background: var(--kz-surface-hover);
 }
 
 .row-actions {

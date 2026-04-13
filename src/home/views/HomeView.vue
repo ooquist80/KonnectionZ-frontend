@@ -103,7 +103,7 @@ onMounted(async () => {
 
 .hero p {
   margin: 0;
-  color: #4b5563;
+  color: var(--kz-text-muted);
 }
 
 .menu-grid {
@@ -116,11 +116,11 @@ onMounted(async () => {
   display: grid;
   gap: 0.5rem;
   padding: 1.25rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 0.75rem;
   color: inherit;
   text-decoration: none;
-  background: #ffffff;
+  background: var(--kz-surface);
   transition:
     border-color 0.15s ease,
     transform 0.15s ease,
@@ -134,7 +134,7 @@ onMounted(async () => {
 }
 
 .menu-card span {
-  color: #4b5563;
+  color: var(--kz-text-muted);
 }
 
 .menu-card-admin {
@@ -149,6 +149,7 @@ onMounted(async () => {
 .menu-card--completed {
   border-color: #86efac;
   background: #f0fdf4;
+  color: #1f2937;
 }
 
 .menu-card--completed:hover {
@@ -159,11 +160,17 @@ onMounted(async () => {
 .menu-card--in-progress {
   border-color: #fde68a;
   background: #fffbeb;
+  color: #1f2937;
 }
 
 .menu-card--in-progress:hover {
   border-color: #d97706;
   box-shadow: 0 10px 24px rgba(217, 119, 6, 0.1);
+}
+
+.menu-card--completed span,
+.menu-card--in-progress span {
+  color: #4b5563;
 }
 
 .card-title-row {

@@ -1,7 +1,23 @@
 :root {
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  color: #111827;
-  background: #f9fafb;
+
+  /* Theme variables – dark defaults, overridden by JS for light themes */
+  --kz-text: #f3f4f6;
+  --kz-text-muted: #c9cdd3;
+  --kz-text-faint: #9ca3af;
+  --kz-link: #60a5fa;
+  --kz-border: rgba(255, 255, 255, 0.15);
+  --kz-surface: rgba(255, 255, 255, 0.12);
+  --kz-surface-hover: rgba(255, 255, 255, 0.18);
+  --kz-surface-raised: rgba(30, 41, 59, 0.95);
+  --kz-glass: rgba(255, 255, 255, 0.1);
+  --kz-glass-strong: rgba(255, 255, 255, 0.15);
+  --kz-input-bg: rgba(255, 255, 255, 0.08);
+  --kz-input-border: rgba(255, 255, 255, 0.2);
+  --kz-btn-bg: rgba(255, 255, 255, 0.1);
+  --kz-btn-border: rgba(255, 255, 255, 0.2);
+  --kz-btn-text: #f3f4f6;
+  --kz-btn-hover: rgba(255, 255, 255, 0.18);
 }
 
 * {
@@ -15,14 +31,13 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background-image: url('/background.png');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+  overflow-x: hidden;
+  background: linear-gradient(135deg, #0f2027, #2c5364);
+  color: var(--kz-text);
 }
 
 a {
-  color: #2563eb;
+  color: var(--kz-link);
 }
 
 h1,
@@ -48,17 +63,17 @@ button,
   font-size: 0.85rem;
   font-weight: 600;
   padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-btn-border);
   border-radius: 2rem;
-  background: #fff;
-  color: #1f2937;
+  background: var(--kz-btn-bg);
+  color: var(--kz-btn-text);
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
 }
 
 button:hover:not(:disabled),
 .btn:hover:not(:disabled) {
-  background: #f3f4f6;
+  background: var(--kz-btn-hover);
 }
 
 button:active:not(:disabled),
@@ -93,6 +108,6 @@ button[type="submit"]:hover:not(:disabled) {
 .profile-card,
 .menu-card,
 .edit-form {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--kz-glass-strong);
   backdrop-filter: blur(4px);
 }

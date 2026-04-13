@@ -253,7 +253,7 @@ function onSubmit() {
   align-items: center;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--kz-text-muted);
 }
 
 /* ── Word grid ───────────────────────────────────────────────────────────────── */

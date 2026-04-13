@@ -76,12 +76,12 @@ function gameStatusClass(set: PlayGameSet): string {
   right: 0;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--kz-text-muted);
   text-decoration: none;
 }
 
 .back-link:hover {
-  color: #1f2937;
+  color: var(--kz-text);
 }
 
 .game-select-view {
@@ -98,7 +98,7 @@ function gameStatusClass(set: PlayGameSet): string {
 .active-game p,
 .empty-state {
   margin: 0;
-  color: #4b5563;
+  color: var(--kz-text-muted);
 }
 
 .gameset-list {
@@ -136,8 +136,8 @@ function gameStatusClass(set: PlayGameSet): string {
 }
 
 .status-not-played {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--kz-btn-hover);
+  color: var(--kz-text-muted);
 }
 
 .status-in-progress {

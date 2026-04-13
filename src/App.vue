@@ -1,4 +1,5 @@
 <template>
+  <ParticleBackground />
   <div class="app-shell">
     <header class="topbar">
       <div class="topbar-left">
@@ -18,6 +19,7 @@ import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from './auth/store/authStore'
 import AvatarMenu from './shared/ui/AvatarMenu.vue'
+import ParticleBackground from './shared/ui/ParticleBackground.vue'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -37,6 +39,8 @@ onMounted(async () => {
 
 <style scoped>
 .app-shell {
+  position: relative;
+  z-index: 1;
   max-width: 960px;
   margin: 0 auto;
   padding: 1rem;
@@ -62,10 +66,10 @@ onMounted(async () => {
 }
 
 main {
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 0.75rem;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--kz-glass);
   backdrop-filter: blur(6px);
 }
 </style>

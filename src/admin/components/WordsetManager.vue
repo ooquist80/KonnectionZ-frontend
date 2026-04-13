@@ -159,11 +159,11 @@ onMounted(loadWordsets)
 
 .muted {
   margin: 0;
-  color: #6b7280;
+  color: var(--kz-text-muted);
 }
 
 .create-section {
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 0.75rem;
   padding: 1rem;
 }
@@ -185,8 +185,10 @@ summary {
 .edit-form input {
   font: inherit;
   padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 2rem;
+  background: var(--kz-input-bg);
+  color: var(--kz-text);
 }
 
 .wordset-list {
@@ -198,9 +200,9 @@ summary {
   display: grid;
   gap: 0.5rem;
   padding: 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 0.75rem;
-  background: #fff;
+  background: var(--kz-surface);
 }
 
 .wordset-header {
@@ -213,7 +215,7 @@ summary {
 
 .word-list {
   margin: 0;
-  color: #374151;
+  color: var(--kz-text);
 }
 
 .card-actions {

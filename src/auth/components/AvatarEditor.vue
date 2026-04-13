@@ -253,7 +253,7 @@ const categories: CategoryDef[] = [
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: #f3f4f6;
+  background: var(--kz-btn-hover);
 }
 
 /* ── Category navigation (mobile) ──────────────────────────────────────────── */
@@ -279,7 +279,7 @@ const categories: CategoryDef[] = [
 .nav-label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--kz-text);
 }
 
 @media (min-width: 481px) {
@@ -300,9 +300,9 @@ const categories: CategoryDef[] = [
   display: grid;
   gap: 0.4rem;
   padding: 0.6rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--kz-border);
   border-radius: 0.5rem;
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--kz-glass-strong);
   align-content: start;
 }
 
@@ -329,7 +329,7 @@ const categories: CategoryDef[] = [
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #6b7280;
+  color: var(--kz-text-muted);
 }
 
 /* ── Carousel ──────────────────────────────────────────────────────────────── */
@@ -349,17 +349,17 @@ const categories: CategoryDef[] = [
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kz-border);
   border-radius: 0.375rem;
-  background: #fff;
-  color: #374151;
+  background: var(--kz-btn-bg);
+  color: var(--kz-text);
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.1s;
 }
 
-.carousel-btn:hover  { background: #f3f4f6; }
-.carousel-btn:active { background: #e5e7eb; }
+.carousel-btn:hover  { background: var(--kz-btn-hover); }
+.carousel-btn:active { background: var(--kz-surface-hover); }
 
 .carousel-value {
   flex: 1;
@@ -369,7 +369,7 @@ const categories: CategoryDef[] = [
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #1f2937;
+  color: var(--kz-text);
 }
 
 .carousel-value-sm {
