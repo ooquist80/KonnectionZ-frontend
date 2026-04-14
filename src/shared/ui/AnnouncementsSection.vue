@@ -68,17 +68,19 @@
     </ul>
 
     <!-- User Avatar Modal -->
-    <Transition name="modal">
-      <div v-if="selectedUser" class="modal-overlay" @click="closeUserModal">
-        <div class="modal-content" @click.stop>
-          <button type="button" class="modal-close" @click="closeUserModal" aria-label="Close">
-            ✕
-          </button>
-          <img :src="selectedUser.avatarSrc" :alt="selectedUser.username || 'User'" class="modal-avatar" />
-          <p class="modal-username">{{ selectedUser.username || 'Unknown User' }}</p>
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="selectedUser" class="modal-overlay" @click="closeUserModal">
+          <div class="modal-content" @click.stop>
+            <button type="button" class="modal-close" @click="closeUserModal" aria-label="Close">
+              ✕
+            </button>
+            <img :src="selectedUser.avatarSrc" :alt="selectedUser.username || 'User'" class="modal-avatar" />
+            <p class="modal-username">{{ selectedUser.username || 'Unknown User' }}</p>
+          </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </Teleport>
   </section>
 </template>
 
@@ -464,6 +466,7 @@ function closeUserModal() {
   left: 0;
   right: 0;
   bottom: 0;
+  padding: 1rem;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
@@ -485,6 +488,8 @@ function closeUserModal() {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   max-width: 300px;
   width: 90%;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
 }
 
 .modal-close {
