@@ -374,9 +374,14 @@ input {
 
 .theme-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 0.75rem;
-  max-width: 26rem;
+}
+
+@media (max-width: 768px) {
+  .theme-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .theme-swatch {

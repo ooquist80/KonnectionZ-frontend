@@ -60,7 +60,10 @@ onMounted(async () => {
 }
 
 .brand {
-  font-weight: 700;
+  font-family: 'Righteous', sans-serif;
+  font-weight: 400;
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
   color: inherit;
   text-decoration: none;
 }

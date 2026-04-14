@@ -9,12 +9,15 @@
     <ul v-else class="announcements-list">
       <li v-for="item in items" :key="item.id" class="announcement-item">
         <div class="announcement-top">
-          <img
+          <button
             v-if="item.avatarSrc"
-            :src="item.avatarSrc"
-            :alt="$t('shared.avatarMenu.avatarAlt')"
-            class="announcement-avatar"
-          />
+            type="button"
+            class="announcement-avatar-btn"
+            @click="openUserModal(item)"
+            :aria-label="$t('shared.avatarMenu.avatarAlt')"
+          >
+            <img :src="item.avatarSrc" :alt="$t('shared.avatarMenu.avatarAlt')" class="announcement-avatar" />
+          </button>
           <div v-else class="announcement-avatar announcement-avatar--placeholder" />
 
           <div class="announcement-body">
@@ -57,14 +60,25 @@
               class="comment-input"
               required
               :disabled="commentSubmitting"
+              @keydown.enter="submitComment(item.id)"
             />
-            <button type="submit" class="comment-submit" :disabled="commentSubmitting || !newComment.trim()">
-              {{ commentSubmitting ? '...' : $t('common.send') }}
-            </button>
           </form>
         </div>
       </li>
     </ul>
+
+    <!-- User Avatar Modal -->
+    <Transition name="modal">
+      <div v-if="selectedUser" class="modal-overlay" @click="closeUserModal">
+        <div class="modal-content" @click.stop>
+          <button type="button" class="modal-close" @click="closeUserModal" aria-label="Close">
+            ✕
+          </button>
+          <img :src="selectedUser.avatarSrc" :alt="selectedUser.username || 'User'" class="modal-avatar" />
+          <p class="modal-username">{{ selectedUser.username || 'Unknown User' }}</p>
+        </div>
+      </div>
+    </Transition>
   </section>
 </template>
 
@@ -81,6 +95,7 @@ const { t } = useI18n()
 
 interface AnnouncementItem extends AnnouncementRead {
   avatarSrc: string | null
+  user_name: string | null
 }
 
 const auth = useAuthStore()
@@ -95,6 +110,12 @@ const commentsError = ref<string | null>(null)
 const newComment = ref('')
 const commentSubmitting = ref(false)
 
+interface SelectedUser {
+  username: string | null
+  avatarSrc: string
+}
+const selectedUser = ref<SelectedUser | null>(null)
+
 onMounted(async () => {
   const token = auth.token.value
   if (!token) return
@@ -106,13 +127,13 @@ onMounted(async () => {
     const announcements = await getAnnouncements(token)
 
     const userIds = [...new Set(announcements.map((a) => a.user_id).filter((id): id is number => id !== null))]
-    const userMap = new Map<number, string>()
+    const userMap = new Map<number, { avatarSvg: string; username: string }>()
 
     await Promise.all(
       userIds.map(async (id) => {
         try {
           const user = await getUser(token, id)
-          userMap.set(id, buildAvatarSvg(user.avatar))
+          userMap.set(id, { avatarSvg: buildAvatarSvg(user.avatar), username: user.username })
         } catch {
           // silently skip if user fetch fails
         }
@@ -121,7 +142,8 @@ onMounted(async () => {
 
     items.value = announcements.map((a) => ({
       ...a,
-      avatarSrc: a.user_id !== null ? (userMap.get(a.user_id) ?? null) : null,
+      avatarSrc: a.user_id !== null ? (userMap.get(a.user_id)?.avatarSvg ?? null) : null,
+      user_name: a.user_id !== null ? (userMap.get(a.user_id)?.username ?? null) : null,
     }))
   } catch (err) {
     error.value = err instanceof Error ? err.message : t('shared.announcements.loadCommentsFailed')
@@ -187,6 +209,17 @@ function formatDate(iso: string): string {
     minute: '2-digit',
   })
 }
+
+function openUserModal(item: AnnouncementItem) {
+  selectedUser.value = {
+    username: item.user_name,
+    avatarSrc: item.avatarSrc || '',
+  }
+}
+
+function closeUserModal() {
+  selectedUser.value = null
+}
 </script>
 
 <style scoped>
@@ -241,6 +274,36 @@ function formatDate(iso: string): string {
 
 .announcement-avatar--placeholder {
   background: var(--kz-surface-hover);
+}
+
+.announcement-avatar-btn {
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.announcement-avatar-btn .announcement-avatar {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.announcement-avatar-btn:hover {
+  border-color: var(--kz-link);
+}
+
+.announcement-avatar-btn:active {
+  transform: scale(0.97);
 }
 
 .announcement-body {
@@ -318,7 +381,7 @@ function formatDate(iso: string): string {
 }
 
 .comment-user {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: var(--kz-text);
 }
 
@@ -353,13 +416,134 @@ function formatDate(iso: string): string {
   border: 1px solid var(--kz-border);
   border-radius: 2rem;
   min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   background: var(--kz-input-bg);
+  color: var(--kz-text);
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: var(--kz-link);
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .comment-user {
+    font-size: 0.8rem;
+  }
+
+  .comment-content {
+    font-size: 0.875rem;
+  }
+
+  .comment-time {
+    font-size: 0.72rem;
+  }
+
+  .comment-input {
+    font-size: 0.875rem;
+  }
+
+  .comment-submit {
+    font-size: 0.8rem;
+  }
+
+  .comments-status {
+    font-size: 0.875rem;
+  }
+}
+
+/* ── User Avatar Modal ── */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(2px);
+}
+
+.modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  background: var(--kz-surface-raised);
+  border: 1px solid var(--kz-border);
+  border-radius: 1rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  max-width: 300px;
+  width: 90%;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--kz-text-muted);
+  cursor: pointer;
+  transition: color 0.15s;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
   color: var(--kz-text);
 }
 
-.comment-submit {
-  font-size: 0.75rem;
-  padding: 0.35rem 0.7rem;
-  flex-shrink: 0;
+.modal-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid var(--kz-link);
+}
+
+.modal-username {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--kz-text);
+  text-align: center;
+  word-break: break-word;
+}
+
+/* ── Modal Transition ── */
+
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active .modal-content,
+.modal-leave-active .modal-content {
+  transition: transform 0.2s ease;
+}
+
+.modal-enter-from .modal-content,
+.modal-leave-to .modal-content {
+  transform: scale(0.95);
 }
 </style>

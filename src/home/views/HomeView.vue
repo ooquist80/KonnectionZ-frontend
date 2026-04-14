@@ -24,11 +24,6 @@
         <span>{{ gameSelectSubtitle }}</span>
       </RouterLink>
 
-      <RouterLink to="/account" class="menu-card">
-        <strong>{{ $t('home.userAccount') }}</strong>
-        <span>{{ $t('home.userAccountDesc') }}</span>
-      </RouterLink>
-
       <RouterLink v-if="isAdmin" to="/admin" class="menu-card menu-card-admin">
         <strong>{{ $t('home.administration') }}</strong>
         <span>{{ $t('home.administrationDesc') }}</span>
