@@ -216,6 +216,12 @@
       "accountSettings": "Kontoinställningar",
       "signOut": "Logga ut"
     },
+    "wakeLock": {
+      "off": "Håll vaken",
+      "on": "Vaken på",
+      "tooltip": "Förhindra att skärmen slocknar under ett spel",
+      "unsupported": "Din webbläsare har inte stöd för att hålla skärmen vaken"
+    },
     "announcements": {
       "title": "Meddelanden",
       "loading": "Laddar...",

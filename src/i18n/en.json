@@ -216,6 +216,12 @@
       "accountSettings": "Account settings",
       "signOut": "Sign out"
     },
+    "wakeLock": {
+      "off": "Keep awake",
+      "on": "Awake on",
+      "tooltip": "Prevent the screen from turning off during a game",
+      "unsupported": "Your browser does not support keeping the screen awake"
+    },
     "announcements": {
       "title": "Announcements",
       "loading": "Loading...",
