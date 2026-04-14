@@ -50,11 +50,15 @@ async function onSubmit() {
 form {
   display: grid;
   gap: 0.5rem;
-  max-width: 26rem;
+  width: min(100%, 26rem);
+  min-width: 0;
 }
 
 input {
   font: inherit;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   padding: 0.5rem 1rem;
   border: 1px solid var(--kz-border);
   border-radius: 2rem;
