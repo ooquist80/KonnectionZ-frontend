@@ -6,23 +6,26 @@
         <RouterLink to="/" class="brand">KonnectionZ</RouterLink>
       </div>
       <div v-if="auth.user.value" class="topbar-right">
-        <button
-          v-if="isGameplayRoute"
-          type="button"
-          class="wake-lock-btn"
-          :class="{ 'wake-lock-btn--active': wakeLock.isActive.value }"
-          :aria-pressed="wakeLock.isEnabled.value"
-          :disabled="!wakeLock.isSupported.value"
-          :title="wakeLock.isSupported.value ? $t('shared.wakeLock.tooltip') : $t('shared.wakeLock.unsupported')"
-          @click="onToggleWakeLock"
-        >
-          <span class="wake-lock-label">
-            {{ wakeLock.isEnabled.value ? $t('shared.wakeLock.on') : $t('shared.wakeLock.off') }}
-          </span>
-          <span class="wake-lock-switch" aria-hidden="true">
-            <span class="wake-lock-thumb" />
-          </span>
-        </button>
+        <div class="wake-lock-slot">
+          <button
+            v-if="isGameplayRoute"
+            type="button"
+            class="wake-lock-btn"
+            :class="{ 'wake-lock-btn--active': wakeLock.isActive.value }"
+            :aria-pressed="wakeLock.isEnabled.value"
+            :disabled="!wakeLock.isSupported.value"
+            :title="wakeLock.isSupported.value ? $t('shared.wakeLock.tooltip') : $t('shared.wakeLock.unsupported')"
+            @click="onToggleWakeLock"
+          >
+            <span class="wake-lock-icon" aria-hidden="true">☀</span>
+            <span class="wake-lock-label">
+              {{ wakeLock.isEnabled.value ? $t('shared.wakeLock.on') : $t('shared.wakeLock.off') }}
+            </span>
+            <span class="wake-lock-switch" aria-hidden="true">
+              <span class="wake-lock-thumb" />
+            </span>
+          </button>
+        </div>
         <AvatarMenu />
       </div>
     </header>
@@ -111,6 +114,11 @@ function onToggleWakeLock() {
   gap: 0.6rem;
 }
 
+.wake-lock-slot {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .wake-lock-btn {
   display: inline-flex;
   align-items: center;
@@ -123,6 +131,12 @@ function onToggleWakeLock() {
 
 .wake-lock-label {
   line-height: 1;
+}
+
+.wake-lock-icon {
+  display: none;
+  line-height: 1;
+  font-size: 1rem;
 }
 
 .wake-lock-switch {
@@ -175,11 +189,30 @@ main {
 }
 
 @media (max-width: 640px) {
+  .topbar-right {
+    display: grid;
+    grid-template-columns: 8.25rem auto;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .wake-lock-slot {
+    min-width: 0;
+  }
+
   .wake-lock-btn {
     gap: 0.45rem;
-    padding-left: 0.75rem;
+    padding-left: 0.55rem;
     padding-right: 0.4rem;
     font-size: 0.8rem;
+  }
+
+  .wake-lock-icon {
+    display: inline-block;
+  }
+
+  .wake-lock-label {
+    display: none;
   }
 
   .wake-lock-switch {

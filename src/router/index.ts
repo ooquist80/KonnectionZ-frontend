@@ -14,6 +14,13 @@ import GameCreationView from '../admin/views/GameCreationView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
+  scrollBehavior(_to, _from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    }
+
+    return { top: 0 }
+  },
   routes: [
     { path: '/', name: 'home', component: HomeView, meta: { requiresAuth: true } },
     { path: '/login', name: 'login', component: LoginView },
