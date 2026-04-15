@@ -77,6 +77,7 @@ import { nextTick, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { WordsetRead } from '../../shared/types/api'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
+import { launchCompletionFireworks } from '../../shared/utils/fireworks'
 
 const { t } = useI18n()
 
@@ -164,6 +165,15 @@ watch(
     }
   },
   { immediate: true },
+)
+
+watch(
+  () => props.wordsRemaining.length,
+  (remainingCount, previousCount) => {
+    if ((previousCount ?? 0) > 0 && remainingCount === 0) {
+      launchCompletionFireworks()
+    }
+  },
 )
 
 function toggleWord(word: string) {

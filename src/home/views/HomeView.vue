@@ -24,6 +24,11 @@
         <span>{{ gameSelectSubtitle }}</span>
       </RouterLink>
 
+      <RouterLink v-if="isGamemaster" to="/game-creation" class="menu-card menu-card-admin">
+        <strong>{{ $t('home.gameCreation') }}</strong>
+        <span>{{ $t('home.gameCreationDesc') }}</span>
+      </RouterLink>
+
       <RouterLink v-if="isAdmin" to="/admin" class="menu-card menu-card-admin">
         <strong>{{ $t('home.administration') }}</strong>
         <span>{{ $t('home.administrationDesc') }}</span>
@@ -41,13 +46,12 @@ import { useAuthStore } from '../../auth/store/authStore'
 import AnnouncementsSection from '../../shared/ui/AnnouncementsSection.vue'
 import { getDailyGameset, listGamesets } from '../../shared/api/playApi'
 import type { PlayGameSet } from '../../shared/types/api'
+import { hasAdminScope, hasGamemasterScope } from '../../shared/auth/permissions'
 
 const { t } = useI18n()
 const auth = useAuthStore()
-const isAdmin = computed(() => {
-  const scopes = auth.user.value?.scopes ?? []
-  return scopes.some((s) => s.split(' ').includes('user:admin'))
-})
+const isAdmin = computed(() => hasAdminScope(auth.user.value?.scopes ?? []))
+const isGamemaster = computed(() => hasGamemasterScope(auth.user.value?.scopes ?? []))
 
 const dailyGame = ref<PlayGameSet | null>(null)
 const gameSets = ref<PlayGameSet[]>([])

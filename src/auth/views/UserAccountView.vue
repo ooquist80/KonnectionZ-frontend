@@ -30,7 +30,17 @@
       </div>
       <div class="account-row">
         <span class="label">{{ $t('auth.account.scopes') }}</span>
-        <strong>{{ auth.user.value.scopes.length ? auth.user.value.scopes.join(', ') : $t('auth.account.noScopes') }}</strong>
+        <div v-if="auth.user.value.scopes.length" class="scope-badges">
+          <span
+            v-for="scope in auth.user.value.scopes"
+            :key="scope"
+            class="scope-badge"
+            :class="getScopeBadgeClass(scope)"
+          >
+            {{ formatScopeLabel(scope) }}
+          </span>
+        </div>
+        <strong v-else>{{ $t('auth.account.noScopes') }}</strong>
       </div>
       <div class="card-actions">
         <button class="btn-secondary" @click="toggleEditProfile">
@@ -116,6 +126,7 @@ import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../store/authStore'
 import { useThemeStore } from '../../shared/store/themeStore'
 import { buildAvatarSvg } from '../../shared/utils/avatarUtils'
+import { formatScopeLabel } from '../../shared/auth/permissions'
 import { setLocale } from '../../i18n'
 
 const { t, locale: currentLocale } = useI18n()
@@ -129,6 +140,22 @@ const languages = [
 
 function changeLocale(code: 'en' | 'sv') {
   setLocale(code)
+}
+
+function getScopeBadgeClass(scope: string): string {
+  if (scope === 'user:player') {
+    return 'scope-badge--play'
+  }
+
+  if (scope === 'user:gamemaster') {
+    return 'scope-badge--gamemaster'
+  }
+
+  if (scope === 'user:admin') {
+    return 'scope-badge--admin'
+  }
+
+  return ''
 }
 
 const currentAvatarSvg = computed(() =>
@@ -296,6 +323,41 @@ function extractErrorMessage(err: unknown): string | null {
   gap: 0.5rem;
   flex-wrap: wrap;
   margin-top: 0.25rem;
+}
+
+.scope-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.scope-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: var(--kz-glass-strong);
+  border: 1px solid var(--kz-border);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.scope-badge--play {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.scope-badge--gamemaster {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.scope-badge--admin {
+  background: #ede9fe;
+  border-color: #c4b5fd;
+  color: #6d28d9;
 }
 
 .section {

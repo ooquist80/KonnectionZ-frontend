@@ -16,7 +16,7 @@
         <input id="u-password" v-model="form.password" type="password" required />
 
         <label for="u-scopes">{{ $t('admin.users.scopes') }}</label>
-        <input id="u-scopes" v-model="form.scopes" placeholder="user:play,user:admin" />
+        <input id="u-scopes" v-model="form.scopes" placeholder="user:player,user:admin" />
 
         <button type="submit" :disabled="isLoading">{{ isLoading ? $t('admin.users.creating') : $t('admin.users.createUser') }}</button>
       </form>
@@ -88,7 +88,7 @@ const errorMessage = ref<string | null>(null)
 const users = ref<UserRead[]>([])
 const usersLoading = ref(false)
 
-const form = reactive({ username: '', email: '', password: '', scopes: 'user:play' })
+const form = reactive({ username: '', email: '', password: '', scopes: 'user:player' })
 
 function token(): string {
   return auth.token.value!
@@ -120,7 +120,7 @@ async function onCreateUser() {
     form.username = ''
     form.email = ''
     form.password = ''
-    form.scopes = 'user:play'
+    form.scopes = 'user:player'
     await fetchUsers()
   } catch (e) {
     errorMessage.value = e instanceof Error ? e.message : t('admin.users.createFailed')

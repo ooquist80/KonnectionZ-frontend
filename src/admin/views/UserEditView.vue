@@ -17,7 +17,7 @@
       <input id="e-email" v-model="form.email" type="email" required placeholder="john@example.com" />
 
       <label for="e-scopes">{{ $t('admin.userEdit.scopes') }}</label>
-      <input id="e-scopes" v-model="form.scopes" placeholder="user:play,user:admin" />
+      <input id="e-scopes" v-model="form.scopes" placeholder="user:player,user:admin" />
 
       <div class="change-password-toggle">
         <label class="checkbox-label">

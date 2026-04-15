@@ -61,6 +61,7 @@ import type { WordsetRead } from '../../shared/types/api'
 import { listWordsets, createWordset, updateWordset, deleteWordset } from '../../shared/api/adminApi'
 import { useAuthStore } from '../../auth/store/authStore'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
+import { parseWordsInput } from '../utils/wordsetForm'
 
 const { t } = useI18n()
 const auth = useAuthStore()
@@ -77,10 +78,6 @@ function token(): string {
   return auth.token.value!
 }
 
-function parseWords(raw: string): string[] {
-  return raw.split(',').map((w) => w.trim()).filter((w) => w.length > 0)
-}
-
 async function loadWordsets() {
   isLoading.value = true
   errorMessage.value = null
@@ -94,7 +91,7 @@ async function loadWordsets() {
 }
 
 async function onCreateWordset() {
-  const words = parseWords(form.wordsRaw)
+  const words = parseWordsInput(form.wordsRaw)
   if (words.length < 4) { errorMessage.value = t('admin.wordsets.minWords'); return }
 
   isLoading.value = true
@@ -121,7 +118,7 @@ function beginEdit(ws: WordsetRead) {
 
 async function onSaveEdit() {
   if (editingId.value === null) return
-  const words = parseWords(editForm.wordsRaw)
+  const words = parseWordsInput(editForm.wordsRaw)
   if (words.length < 4) { errorMessage.value = t('admin.wordsets.minWords'); return }
 
   isLoading.value = true

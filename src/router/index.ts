@@ -10,6 +10,7 @@ import UserAccountView from '../auth/views/UserAccountView.vue'
 import AvatarEditorView from '../auth/views/AvatarEditorView.vue'
 import AdminView from '../admin/views/AdminView.vue'
 import UserEditView from '../admin/views/UserEditView.vue'
+import GameCreationView from '../admin/views/GameCreationView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -20,6 +21,7 @@ const router = createRouter({
     { path: '/daily', name: 'daily', component: DailyGameView, meta: { requiresAuth: true } },
     { path: '/game', name: 'game-select', component: GameSelectView, meta: { requiresAuth: true } },
     { path: '/game/:gamesetId', name: 'game-play', component: GamePlayView, meta: { requiresAuth: true } },
+    { path: '/game-creation', name: 'game-creation', component: GameCreationView, meta: { requiresAuth: true } },
     { path: '/account', name: 'account', component: UserAccountView, meta: { requiresAuth: true } },
     { path: '/account/avatar', name: 'avatar-editor', component: AvatarEditorView, meta: { requiresAuth: true } },
     { path: '/admin', name: 'admin', component: AdminView, meta: { requiresAuth: true } },
