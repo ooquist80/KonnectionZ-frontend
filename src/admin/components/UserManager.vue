@@ -15,8 +15,8 @@
         <label for="u-password">{{ $t('admin.users.password') }}</label>
         <input id="u-password" v-model="form.password" type="password" required />
 
-        <label for="u-scopes">{{ $t('admin.users.scopes') }}</label>
-        <input id="u-scopes" v-model="form.scopes" placeholder="user:player,user:admin" />
+        <label>{{ $t('admin.users.scopes') }}</label>
+        <ScopePicker v-model="form.scopes" />
 
         <button type="submit" :disabled="isLoading">{{ isLoading ? $t('admin.users.creating') : $t('admin.users.createUser') }}</button>
       </form>
@@ -43,7 +43,19 @@
               <td :data-label="$t('admin.users.tableId')">{{ user.id }}</td>
               <td :data-label="$t('admin.users.tableUsername')">{{ user.username }}</td>
               <td :data-label="$t('admin.users.tableEmail')">{{ user.email }}</td>
-              <td :data-label="$t('admin.users.tableScopes')">{{ user.scopes.length ? user.scopes.join(', ') : $t('common.none') }}</td>
+              <td :data-label="$t('admin.users.tableScopes')">
+                <div v-if="user.scopes.length" class="table-scope-badges">
+                  <span
+                    v-for="scope in user.scopes"
+                    :key="scope"
+                    class="table-scope-badge"
+                    :class="getScopeBadgeClass(scope)"
+                  >
+                    {{ formatScopeLabel(scope) }}
+                  </span>
+                </div>
+                <span v-else>{{ $t('common.none') }}</span>
+              </td>
               <td :data-label="$t('admin.users.tableActions')" class="actions-cell">
                 <div class="row-actions">
                   <button
@@ -78,6 +90,8 @@ import type { UserRead } from '../../shared/types/api'
 import { createUser, listUsers, deleteUser } from '../../shared/api/adminApi'
 import { useAuthStore } from '../../auth/store/authStore'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
+import ScopePicker from './ScopePicker.vue'
+import { formatScopeLabel, getScopeBadgeClass, normalizeScopes } from '../../shared/auth/permissions'
 
 const { t } = useI18n()
 const auth = useAuthStore()
@@ -88,7 +102,7 @@ const errorMessage = ref<string | null>(null)
 const users = ref<UserRead[]>([])
 const usersLoading = ref(false)
 
-const form = reactive({ username: '', email: '', password: '', scopes: 'user:player' })
+const form = reactive({ username: '', email: '', password: '', scopes: ['user:player'] as string[] })
 
 function token(): string {
   return auth.token.value!
@@ -115,12 +129,12 @@ async function onCreateUser() {
       username: form.username,
       email: form.email,
       password: form.password,
-      scopes: form.scopes || undefined,
+      scopes: normalizeScopes(form.scopes).join(',') || undefined,
     })
     form.username = ''
     form.email = ''
     form.password = ''
-    form.scopes = 'user:player'
+    form.scopes = ['user:player']
     await fetchUsers()
   } catch (e) {
     errorMessage.value = e instanceof Error ? e.message : t('admin.users.createFailed')
@@ -171,10 +185,47 @@ summary {
 .create-form input {
   font: inherit;
   padding: 0.5rem 1rem;
+  width: 100%;
+  min-width: 0;
   border: 1px solid var(--kz-border);
   border-radius: 2rem;
   background: var(--kz-input-bg);
   color: var(--kz-text);
+}
+
+.table-scope-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.table-scope-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--kz-glass-strong);
+  border: 1px solid var(--kz-border);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.table-scope-badge.scope-badge--play {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.table-scope-badge.scope-badge--gamemaster {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.table-scope-badge.scope-badge--admin {
+  background: #ede9fe;
+  border-color: #c4b5fd;
+  color: #6d28d9;
 }
 
 .users-section {
@@ -230,19 +281,21 @@ summary {
 }
 
 .edit-btn {
-  background: #eff6ff;
-  color: #1d4ed8;
-  border: 1px solid #bfdbfe;
-  padding: 0.25rem 0.75rem;
-  border-radius: 2rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--kz-text);
+  border: 1px solid var(--kz-border);
+  padding: 0.45rem 0.8rem;
+  border-radius: 0.6rem;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
 }
 
 .edit-btn:hover:not(:disabled) {
-  background: #dbeafe;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #93c5fd;
+  transform: translateY(-1px);
 }
 
 .edit-btn:disabled {
@@ -251,19 +304,21 @@ summary {
 }
 
 .delete-btn {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fca5a5;
-  padding: 0.25rem 0.75rem;
-  border-radius: 2rem;
+  background: rgba(127, 29, 29, 0.12);
+  color: #fecaca;
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  padding: 0.45rem 0.8rem;
+  border-radius: 0.6rem;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
 }
 
 .delete-btn:hover:not(:disabled) {
-  background: #fecaca;
+  background: rgba(127, 29, 29, 0.22);
+  border-color: #f87171;
+  transform: translateY(-1px);
 }
 
 .delete-btn:disabled {

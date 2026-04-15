@@ -16,8 +16,8 @@
       <label for="e-email">{{ $t('admin.userEdit.email') }}</label>
       <input id="e-email" v-model="form.email" type="email" required placeholder="john@example.com" />
 
-      <label for="e-scopes">{{ $t('admin.userEdit.scopes') }}</label>
-      <input id="e-scopes" v-model="form.scopes" placeholder="user:player,user:admin" />
+      <label>{{ $t('admin.userEdit.scopes') }}</label>
+      <ScopePicker v-model="form.scopes" />
 
       <div class="change-password-toggle">
         <label class="checkbox-label">
@@ -46,6 +46,8 @@ import { useI18n } from 'vue-i18n'
 import ApiErrorBanner from '../../shared/ui/ApiErrorBanner.vue'
 import { getUser, updateUser } from '../../shared/api/adminApi'
 import { useAuthStore } from '../../auth/store/authStore'
+import ScopePicker from '../components/ScopePicker.vue'
+import { normalizeScopes } from '../../shared/auth/permissions'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -58,7 +60,7 @@ const loadingUser = ref(true)
 const isSaving = ref(false)
 const errorMessage = ref<string | null>(null)
 
-const form = reactive({ username: '', email: '', password: '', scopes: '', changePassword: false })
+const form = reactive({ username: '', email: '', password: '', scopes: [] as string[], changePassword: false })
 
 function token(): string {
   return auth.token.value!
@@ -69,7 +71,7 @@ onMounted(async () => {
     const user = await getUser(token(), userId)
     form.username = user.username
     form.email = user.email
-    form.scopes = user.scopes.join(',')
+    form.scopes = [...user.scopes]
   } catch (e) {
     errorMessage.value = e instanceof Error ? e.message : t('admin.userEdit.loadFailed')
   } finally {
@@ -85,7 +87,7 @@ async function onSubmit() {
       username: form.username,
       email: form.email,
       password: form.password || 'unused',
-      scopes: form.scopes || undefined,
+      scopes: normalizeScopes(form.scopes).join(',') || undefined,
     }, form.changePassword)
     router.push({ name: 'admin' })
   } catch (e) {
@@ -133,6 +135,7 @@ async function onSubmit() {
 .edit-form {
   display: grid;
   gap: 0.5rem;
+  width: min(100%, 30rem);
   max-width: 30rem;
   border: 1px solid var(--kz-border);
   border-radius: 0.75rem;
@@ -142,6 +145,8 @@ async function onSubmit() {
 .edit-form input {
   font: inherit;
   padding: 0.5rem 1rem;
+  width: 100%;
+  min-width: 0;
   border: 1px solid var(--kz-border);
   border-radius: 2rem;
   background: var(--kz-input-bg);
@@ -178,5 +183,19 @@ async function onSubmit() {
   display: flex;
   gap: 0.5rem;
   margin-top: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .edit-form {
+    padding: 1rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
 }
 </style>

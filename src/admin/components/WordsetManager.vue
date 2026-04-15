@@ -220,15 +220,40 @@ summary {
 .card-actions {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.card-actions button {
+  padding: 0.45rem 0.8rem;
+  border-radius: 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+}
+
+.card-actions button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.card-actions button:not(.btn-danger) {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--kz-text);
+  border-color: var(--kz-border);
 }
 
 .btn-danger {
-  background: #fee2e2;
-  color: #991b1b;
-  border-color: #fecaca;
+  background: rgba(127, 29, 29, 0.12);
+  color: #fecaca;
+  border-color: rgba(248, 113, 113, 0.45);
+}
+
+.card-actions button:not(.btn-danger):hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #93c5fd;
 }
 
 .btn-danger:hover:not(:disabled) {
-  background: #fecaca;
+  background: rgba(127, 29, 29, 0.22);
+  border-color: #f87171;
 }
 </style>

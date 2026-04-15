@@ -126,7 +126,7 @@ import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '../store/authStore'
 import { useThemeStore } from '../../shared/store/themeStore'
 import { buildAvatarSvg } from '../../shared/utils/avatarUtils'
-import { formatScopeLabel } from '../../shared/auth/permissions'
+import { formatScopeLabel, getScopeBadgeClass } from '../../shared/auth/permissions'
 import { setLocale } from '../../i18n'
 
 const { t, locale: currentLocale } = useI18n()
@@ -140,22 +140,6 @@ const languages = [
 
 function changeLocale(code: 'en' | 'sv') {
   setLocale(code)
-}
-
-function getScopeBadgeClass(scope: string): string {
-  if (scope === 'user:player') {
-    return 'scope-badge--play'
-  }
-
-  if (scope === 'user:gamemaster') {
-    return 'scope-badge--gamemaster'
-  }
-
-  if (scope === 'user:admin') {
-    return 'scope-badge--admin'
-  }
-
-  return ''
 }
 
 const currentAvatarSvg = computed(() =>
