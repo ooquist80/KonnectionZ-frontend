@@ -157,6 +157,7 @@
       "tableUsername": "Username",
       "tableEmail": "Email",
       "tableScopes": "Scopes",
+      "tableActions": "Actions",
       "confirmDelete": "Delete user \"{username}\" (#{id})?",
       "loadFailed": "Failed to load users",
       "createFailed": "Failed to create user",

@@ -157,6 +157,7 @@
       "tableUsername": "Användarnamn",
       "tableEmail": "E-post",
       "tableScopes": "Behörigheter",
+      "tableActions": "Åtgärder",
       "confirmDelete": "Radera användare \"{username}\" (#{id})?",
       "loadFailed": "Kunde inte ladda användare",
       "createFailed": "Kunde inte skapa användare",

@@ -27,43 +27,45 @@
       <h3>{{ $t('admin.users.allUsers') }}</h3>
       <p v-if="usersLoading" class="status-text">{{ $t('admin.users.loadingUsers') }}</p>
       <p v-else-if="!users.length" class="status-text">{{ $t('admin.users.noUsers') }}</p>
-      <table v-else class="users-table">
-        <thead>
-          <tr>
-            <th>{{ $t('admin.users.tableId') }}</th>
-            <th>{{ $t('admin.users.tableUsername') }}</th>
-            <th>{{ $t('admin.users.tableEmail') }}</th>
-            <th>{{ $t('admin.users.tableScopes') }}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="user in users" :key="user.id">
-            <td>{{ user.id }}</td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.scopes.length ? user.scopes.join(', ') : $t('common.none') }}</td>
-            <td>
-              <div class="row-actions">
-                <button
-                  class="edit-btn"
-                  :disabled="isLoading"
-                  @click="router.push({ name: 'admin-user-edit', params: { userId: user.id } })"
-                >
-                  {{ $t('common.edit') }}
-                </button>
-                <button
-                  class="delete-btn"
-                  :disabled="isLoading"
-                  @click="onDeleteUser(user.id, user.username)"
-                >
-                  {{ $t('common.delete') }}
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div v-else class="users-table-wrap">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>{{ $t('admin.users.tableId') }}</th>
+              <th>{{ $t('admin.users.tableUsername') }}</th>
+              <th>{{ $t('admin.users.tableEmail') }}</th>
+              <th>{{ $t('admin.users.tableScopes') }}</th>
+              <th>{{ $t('admin.users.tableActions') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="user in users" :key="user.id">
+              <td :data-label="$t('admin.users.tableId')">{{ user.id }}</td>
+              <td :data-label="$t('admin.users.tableUsername')">{{ user.username }}</td>
+              <td :data-label="$t('admin.users.tableEmail')">{{ user.email }}</td>
+              <td :data-label="$t('admin.users.tableScopes')">{{ user.scopes.length ? user.scopes.join(', ') : $t('common.none') }}</td>
+              <td :data-label="$t('admin.users.tableActions')" class="actions-cell">
+                <div class="row-actions">
+                  <button
+                    class="edit-btn"
+                    :disabled="isLoading"
+                    @click="router.push({ name: 'admin-user-edit', params: { userId: user.id } })"
+                  >
+                    {{ $t('common.edit') }}
+                  </button>
+                  <button
+                    class="delete-btn"
+                    :disabled="isLoading"
+                    @click="onDeleteUser(user.id, user.username)"
+                  >
+                    {{ $t('common.delete') }}
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -190,6 +192,10 @@ summary {
   font-size: 0.9rem;
 }
 
+.users-table-wrap {
+  overflow-x: auto;
+}
+
 .users-table {
   width: 100%;
   border-collapse: collapse;
@@ -201,6 +207,8 @@ summary {
   text-align: left;
   padding: 0.5rem 0.75rem;
   border-bottom: 1px solid var(--kz-border);
+  vertical-align: top;
+  overflow-wrap: anywhere;
 }
 
 .users-table th {
@@ -218,6 +226,7 @@ summary {
 .row-actions {
   display: flex;
   gap: 0.4rem;
+  flex-wrap: wrap;
 }
 
 .edit-btn {
@@ -260,5 +269,62 @@ summary {
 .delete-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .users-table {
+    display: block;
+  }
+
+  .users-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .users-table tbody {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .users-table tr {
+    display: grid;
+    gap: 0.6rem;
+    padding: 0.9rem;
+    border: 1px solid var(--kz-border);
+    border-radius: 0.75rem;
+    background: var(--kz-surface);
+  }
+
+  .users-table td {
+    display: grid;
+    grid-template-columns: minmax(6.5rem, 8rem) minmax(0, 1fr);
+    gap: 0.4rem 0.75rem;
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  .users-table td::before {
+    content: attr(data-label);
+    font-size: 0.8rem;
+    color: var(--kz-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+
+  .actions-cell {
+    align-items: start;
+  }
+
+  .row-actions {
+    justify-content: flex-start;
+  }
 }
 </style>
