@@ -34,7 +34,7 @@
               <th>{{ $t('admin.users.tableId') }}</th>
               <th>{{ $t('admin.users.tableUsername') }}</th>
               <th>{{ $t('admin.users.tableEmail') }}</th>
-              <th>{{ $t('admin.users.tableScopes') }}</th>
+              <th class="scopes-column">{{ $t('admin.users.tableScopes') }}</th>
               <th>{{ $t('admin.users.tableActions') }}</th>
             </tr>
           </thead>
@@ -43,7 +43,7 @@
               <td :data-label="$t('admin.users.tableId')">{{ user.id }}</td>
               <td :data-label="$t('admin.users.tableUsername')">{{ user.username }}</td>
               <td :data-label="$t('admin.users.tableEmail')">{{ user.email }}</td>
-              <td :data-label="$t('admin.users.tableScopes')">
+              <td :data-label="$t('admin.users.tableScopes')" class="scopes-column">
                 <div v-if="user.scopes.length" class="table-scope-badges">
                   <span
                     v-for="scope in user.scopes"
@@ -208,6 +208,7 @@ summary {
   border: 1px solid var(--kz-border);
   font-size: 0.75rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .table-scope-badge.scope-badge--play {
@@ -251,6 +252,11 @@ summary {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
+}
+
+.users-table .scopes-column {
+  width: 24%;
+  min-width: 11rem;
 }
 
 .users-table th,

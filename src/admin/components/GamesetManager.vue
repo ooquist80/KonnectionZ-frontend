@@ -18,7 +18,7 @@
           <h4>{{ $t('admin.gamesets.detailsTitle') }}</h4>
 
           <label for="gs-name">{{ $t('admin.gamesets.name') }}</label>
-          <input id="gs-name" v-model="form.name" required placeholder="e.g. Daily 2026-04-03" />
+          <input id="gs-name" v-model="form.name" type="text" required placeholder="e.g. Daily 2026-04-03" />
 
           <label for="gs-daily-date">
             {{ $t('admin.gamesets.dailyDate') }}
