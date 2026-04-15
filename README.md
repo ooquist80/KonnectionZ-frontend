@@ -37,3 +37,11 @@ npm run dev
 ```bash
 npm run build
 ```
+
+## PWA
+
+The production build ships with a web app manifest and service worker so supported browsers can install KonnectionZ as a Progressive Web App.
+
+- install metadata is served from `public/manifest.webmanifest`
+- the service worker caches the app shell and static assets for faster repeat loads
+- API-backed gameplay and auth still require network access
